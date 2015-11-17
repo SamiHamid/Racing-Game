@@ -4,10 +4,10 @@ using UnityEngine;
   public class PathFollowing : MonoBehaviour
   {
         public WaypointsContainer waypoints; 
-        public float lookAheadForTargetOffset = 5;
+        public float lookAheadForTargetOffset = 20;
         public float lookAheadForTargetFactor = .1f;
-        public float lookAheadForSpeedOffset = 10;
-        public float lookAheadForSpeedFactor = .2f;
+        public float lookAheadForSpeedOffset = 1;
+        public float lookAheadForSpeedFactor = .05f;
         
         public WaypointsContainer.RoutePoint targetPoint { get; private set; }
         public WaypointsContainer.RoutePoint speedPoint { get; private set; }

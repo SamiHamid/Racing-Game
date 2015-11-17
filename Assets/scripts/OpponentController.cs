@@ -5,21 +5,19 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof (CarController))]
 public class OpponentController : MonoBehaviour
 {
-    [Range(0, 1)] public float m_CautiousSpeedFactor = 0.05f;              
+    [Range(0, 1)] public float m_CautiousSpeedFactor = 0.5f;              
     [Range(0, 180)] public float m_CautiousMaxAngle = 50f;                  
-    public float m_CautiousMaxDistance = 100f;                              
-    public float m_CautiousAngularVelocityFactor = 30f;                     
-    public float m_SteerSensitivity = 0.05f;                                
-    public float m_AccelSensitivity = 0.04f;                                
+    public float m_CautiousMaxDistance = 20f;                              
+    public float m_CautiousAngularVelocityFactor = 5f;                     
+    public float m_SteerSensitivity = 1f;                                
+    public float m_AccelSensitivity = 1f;                                
     public float m_BrakeSensitivity = 1f;                                   
-    public float m_LateralWanderDistance = 3f;                              
-    public float m_LateralWanderSpeed = 0.1f;                               
+    public float m_LateralWanderDistance = 0.5f;                              
+    public float m_LateralWanderSpeed = 0.01f;                               
     [Range(0, 1)] public float m_AccelWanderAmount = 0.1f;                  
-    public float m_AccelWanderSpeed = 0.1f;                                 
+    public float m_AccelWanderSpeed = 0.005f;                                 
     public bool m_Driving;                                                  
-    public Transform m_Target;                                              
-    public bool m_StopWhenTargetReached;                                    
-    public float m_ReachTargetThreshold = 2;                                                                                                
+    public Transform m_Target;                                                                                                                                          
 
     private float m_RandomPerlin;            
     private CarController m_CarController;   
@@ -82,11 +80,6 @@ public class OpponentController : MonoBehaviour
             float steer = Mathf.Clamp(targetAngle*m_SteerSensitivity, -1, 1)*Mathf.Sign(m_CarController.CurrentSpeed);
 
             m_CarController.Move(steer, accel, accel, 0f);
-
-            if (m_StopWhenTargetReached && localTarget.magnitude < m_ReachTargetThreshold)
-            {
-                m_Driving = false;
-            }
         }
     }
 
