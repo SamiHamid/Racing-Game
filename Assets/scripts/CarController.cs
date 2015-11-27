@@ -45,6 +45,10 @@ public class CarController : MonoBehaviour
         {
 
             m_WheelMeshLocalRotations[i] = m_WheelMeshes[i].transform.localRotation;
+			// added by Andrew
+			Debug.Log ("wheelmeshLocalRot = " +  m_WheelMeshLocalRotations[i]);
+			Debug.Log ("wheelmesh = " + m_WheelMeshes[i]);
+
         }
 
         m_WheelColliders[0].attachedRigidbody.centerOfMass = m_CentreOfMass;
