@@ -3,7 +3,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEditor;
 
-public class WaypointsContainer : MonoBehaviour
+
+
+    public class WaypointsContainer : MonoBehaviour
     {
         public WaypointList waypointList = new WaypointList();
         [SerializeField] private bool smoothRoute = true;
@@ -19,6 +21,7 @@ public class WaypointsContainer : MonoBehaviour
             get { return waypointList.items; }
         }
 
+        //this being here will save GC allocs
         private int p0n;
         private int p1n;
         private int p2n;
@@ -30,6 +33,7 @@ public class WaypointsContainer : MonoBehaviour
         private Vector3 P2;
         private Vector3 P3;
 
+        // Use this for initialization
         private void Awake()
         {
             if (Waypoints.Length > 1)
@@ -42,6 +46,7 @@ public class WaypointsContainer : MonoBehaviour
 
         public RoutePoint GetRoutePoint(float dist)
         {
+            // position and direction
             Vector3 p1 = GetRoutePosition(dist);
             Vector3 p2 = GetRoutePosition(dist + 0.1f);
             Vector3 delta = p2 - p1;
@@ -65,16 +70,28 @@ public class WaypointsContainer : MonoBehaviour
                 ++point;
             }
 
+
+            // get nearest two points, ensuring points wrap-around start & end of circuit
             p1n = ((point - 1) + numPoints)%numPoints;
             p2n = point;
+
+            // found point numbers, now find interpolation value between the two middle points
 
             i = Mathf.InverseLerp(distances[p1n], distances[p2n], dist);
 
             if (smoothRoute)
             {
+                // smooth catmull-rom calculation between the two relevant points
+
+
+                // get indices for the surrounding 2 points, because
+                // four points are required by the catmull-rom function
                 p0n = ((point - 2) + numPoints)%numPoints;
                 p3n = (point + 1)%numPoints;
 
+                // 2nd point may have been the 'last' point - a dupe of the first,
+                // (to give a value of max track distance instead of zero)
+                // but now it must be wrapped back to zero if that was the case.
                 p2n = p2n%numPoints;
 
                 P0 = points[p0n];
@@ -86,6 +103,8 @@ public class WaypointsContainer : MonoBehaviour
             }
             else
             {
+                // simple linear lerp between the two points:
+
                 p1n = ((point - 1) + numPoints)%numPoints;
                 p2n = point;
 
@@ -93,13 +112,21 @@ public class WaypointsContainer : MonoBehaviour
             }
         }
 
+
         private Vector3 CatmullRom(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, float i)
         {
-            return 0.5f*((2*p1) + (-p0 + p2)*i + (2*p0 - 5*p1 + 4*p2 - p3)*i*i + (-p0 + 3*p1 - 3*p2 + p3)*i*i*i);
+            // comments are no use here... it's the catmull-rom equation.
+            // Un-magic this, lord vector!
+            return 0.5f*
+                   ((2*p1) + (-p0 + p2)*i + (2*p0 - 5*p1 + 4*p2 - p3)*i*i +
+                    (-p0 + 3*p1 - 3*p2 + p3)*i*i*i);
         }
+
 
         private void CachePositionsAndDistances()
         {
+            // transfer the position of each point and distances between points to arrays for
+            // speed of lookup at runtime
             points = new Vector3[Waypoints.Length + 1];
             distances = new float[Waypoints.Length + 1];
 
@@ -119,19 +146,22 @@ public class WaypointsContainer : MonoBehaviour
             }
         }
 
+
         private void OnDrawGizmos()
         {
             DrawGizmos(false);
         }
+
 
         private void OnDrawGizmosSelected()
         {
             DrawGizmos(true);
         }
 
+
         private void DrawGizmos(bool selected)
         {
-            waypointList.waypoints = this;
+            waypointList.circuit = this;
             if (Waypoints.Length > 1)
             {
                 numPoints = Waypoints.Length;
@@ -167,7 +197,7 @@ public class WaypointsContainer : MonoBehaviour
         [Serializable]
         public class WaypointList
         {
-            public WaypointsContainer waypoints;
+            public WaypointsContainer circuit;
             public Transform[] items = new Transform[0];
         }
 
@@ -183,8 +213,8 @@ public class WaypointsContainer : MonoBehaviour
                 this.direction = direction;
             }
         }
+    
 }
-
 
 
     [CustomPropertyDrawer(typeof (WaypointsContainer.WaypointList))]
@@ -202,6 +232,10 @@ public class WaypointsContainer : MonoBehaviour
             float y = position.y;
             float inspectorWidth = position.width;
 
+            // Draw label
+
+
+            // Don't make child fields be indented
             var indent = EditorGUI.indentLevel;
             EditorGUI.indentLevel = 0;
 
@@ -222,6 +256,7 @@ public class WaypointsContainer : MonoBehaviour
                     {
                         float w = widths[n]*inspectorWidth;
 
+                        // Calculate rects
                         Rect rect = new Rect(rowX, y, w, lineHeight);
                         rowX += w;
 
@@ -273,6 +308,7 @@ public class WaypointsContainer : MonoBehaviour
             }
             else
             {
+                // add button
                 var addButtonRect = new Rect((x + position.width) - widths[widths.Length - 1]*inspectorWidth, y,
                                              widths[widths.Length - 1]*inspectorWidth, lineHeight);
                 if (GUI.Button(addButtonRect, "+"))
@@ -283,6 +319,7 @@ public class WaypointsContainer : MonoBehaviour
                 y += lineHeight + spacing;
             }
 
+            // add all button
             var addAllButtonRect = new Rect(x, y, inspectorWidth, lineHeight);
             if (GUI.Button(addAllButtonRect, "Assign using all child objects"))
             {
@@ -302,6 +339,7 @@ public class WaypointsContainer : MonoBehaviour
             }
             y += lineHeight + spacing;
 
+            // rename all button
             var renameButtonRect = new Rect(x, y, inspectorWidth, lineHeight);
             if (GUI.Button(renameButtonRect, "Auto Rename numerically from this order"))
             {
@@ -327,6 +365,8 @@ public class WaypointsContainer : MonoBehaviour
             return 40 + (items.arraySize*lineAndSpace) + lineAndSpace;
         }
 
+
+        // comparer for check distances in ray cast hits
         public class TransformNameComparer : IComparer
         {
             public int Compare(object x, object y)
@@ -335,3 +375,4 @@ public class WaypointsContainer : MonoBehaviour
             }
         }
 }
+
