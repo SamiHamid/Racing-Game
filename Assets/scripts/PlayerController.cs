@@ -1,22 +1,37 @@
-using System;
+﻿//PlayerControl.cs handles user input to control the car
+
 using UnityEngine;
+using System.Collections;
+using UnityEngine.UI;
 
-   [RequireComponent(typeof (CarController))]
-    public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour {
+	
+	private CarController car_controller;
+	
+	void Awake () {
+		car_controller = GetComponent<CarController>();
+	}
+	
+	void Update ()
     {
-        private CarController carController; 
+        DesktopControl();
 
-        private void Awake()
-        {
-            carController = GetComponent<CarController>();
-        }
-
-
-        private void FixedUpdate()
-        {
-            float h = Input.GetAxis("Horizontal");
-            float v = Input.GetAxis("Vertical");
-            float handbrake = Input.GetAxis("Jump");
-            carController.Move(h, v, v, handbrake);
-        }
+    }
+	
+	void DesktopControl(){
+		
+		car_controller.steerInput = Mathf.Clamp(Input.GetAxis("Horizontal"),-1,1);
+		car_controller.motorInput = Mathf.Clamp01(Input.GetAxis("Vertical"));
+		car_controller.brakeInput = Mathf.Clamp01(-Input.GetAxis("Vertical"));
+		
+		//Respawn the car if we press the Enter key
+		if(Input.GetKey(KeyCode.Return) && RaceManager.instance){
+				Respawn();
+		}
+	}
+	
+	public void Respawn(){
+		if(RaceManager.instance.raceStarted)
+			RaceManager.instance.RespawnRacer(transform,GetComponent<Statistics>().lastPassedNode,3.0f);
+	}
 }

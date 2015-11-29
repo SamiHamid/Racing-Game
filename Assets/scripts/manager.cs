@@ -25,17 +25,17 @@ public class manager : MonoBehaviour {
 
 		if (lapNumber == 3) {
 			// freeze everything 
-			// Access the rigid body on the car and set isCinematic to true. 
+			// Access the rigid body on the car and set isKinematic to true. 
 
 			Application.LoadLevel("winners");
 			Debug.Log("Third lap reached ! "); 
 			lapNumber = 0; 
 		}
 
-		Debug.Log ("Lap Number : " + this.getLapNumber());
+		Debug.Log ("Lap Number : " + this.GetLapNumber());
 	}
 
-	public int getLapNumber(){
+	public int GetLapNumber(){
 		return lapNumber; 
 	}
 
