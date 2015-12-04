@@ -1,23 +1,17 @@
 fileFormatVersion: 2
-guid: f8bec0709eff2ea4caa041e9d232dcfa
-timeCreated: 1448717050
+guid: 231380b2c0c6e814eb397a92a39c57ad
+timeCreated: 1449231284
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: bridge
-    100002: //RootNode
-    100004: track4
-    400000: bridge
-    400002: //RootNode
-    400004: track4
-    2300000: bridge
-    2300002: track4
-    3300000: bridge
-    3300002: track4
-    4300000: track4
-    4300002: bridge
-    9500000: //RootNode
+    100000: //RootNode
+    100002: pCube1
+    400000: //RootNode
+    400002: pCube1
+    2300000: pCube1
+    3300000: pCube1
+    4300000: pCube1
   materials:
     importMaterials: 1
     materialName: 0
@@ -41,7 +35,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 100
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -76,7 +70,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
