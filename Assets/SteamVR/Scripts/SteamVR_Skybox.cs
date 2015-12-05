@@ -57,20 +57,38 @@ public class SteamVR_Skybox : MonoBehaviour
 		return null;
 	}
 
-	void OnEnable()
+	static public void SetOverride(
+		Texture front = null,
+		Texture back = null,
+		Texture left = null,
+		Texture right = null,
+		Texture top = null,
+		Texture bottom = null )
 	{
 		var vr = SteamVR.instance;
 		if (vr != null && vr.compositor != null)
-			vr.compositor.SetSkyboxOverride(vr.graphicsAPI,
-				front ? front.GetNativeTexturePtr() : System.IntPtr.Zero,
-				back ? back.GetNativeTexturePtr() : System.IntPtr.Zero,
-				left ? left.GetNativeTexturePtr() : System.IntPtr.Zero,
-				right ? right.GetNativeTexturePtr() : System.IntPtr.Zero,
-				top ? top.GetNativeTexturePtr() : System.IntPtr.Zero,
-				bottom ? bottom.GetNativeTexturePtr() : System.IntPtr.Zero);
+		{
+			var handles = new Texture[] { front, back, left, right, top, bottom };
+			var textures = new Texture_t[6];
+			for (int i = 0; i < 6; i++)
+			{
+				textures[i].handle = (handles[i] != null) ? handles[i].GetNativeTexturePtr() : System.IntPtr.Zero;
+				textures[i].eType = vr.graphicsAPI;
+				textures[i].eColorSpace = EColorSpace.Auto;
+			}
+			var error = vr.compositor.SetSkyboxOverride(textures);
+			if (error != EVRCompositorError.None)
+			{
+				Debug.LogError("Failed to set skybox override with error: " + error);
+				if (error == EVRCompositorError.TextureIsOnWrongDevice)
+					Debug.Log("Set your graphics driver to use the same video card as the headset is plugged into for Unity.");
+				else if (error == EVRCompositorError.TextureUsesUnsupportedFormat)
+					Debug.Log("Ensure skybox textures are not compressed and have no mipmaps.");
+			}
+		}
 	}
 
-	void OnDisable()
+	static public void ClearOverride()
 	{
 		if (SteamVR.active)
 		{
@@ -78,6 +96,16 @@ public class SteamVR_Skybox : MonoBehaviour
 			if (vr.compositor != null)
 				vr.compositor.ClearSkyboxOverride();
 		}
+	}
+
+	void OnEnable()
+	{
+		SetOverride(front, back, left, right, top, bottom);
+	}
+
+	void OnDisable()
+	{
+		ClearOverride();
 	}
 }
 

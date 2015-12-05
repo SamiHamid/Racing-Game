@@ -21,9 +21,9 @@ public class SteamVR_Render : MonoBehaviour
 
 	SteamVR_CameraMask cameraMask;
 
-	public TrackingUniverseOrigin trackingSpace = TrackingUniverseOrigin.TrackingUniverseStanding;
+	public ETrackingUniverseOrigin trackingSpace = ETrackingUniverseOrigin.TrackingUniverseStanding;
 
-	static public Hmd_Eye eye { get; private set; }
+	static public EVREye eye { get; private set; }
 
 	static private SteamVR_Render _instance;
 	static public SteamVR_Render instance
@@ -131,7 +131,7 @@ public class SteamVR_Render : MonoBehaviour
 	private TrackedDevicePose_t[] poses = new TrackedDevicePose_t[OpenVR.k_unMaxTrackedDeviceCount];
 	private TrackedDevicePose_t[] gamePoses = new TrackedDevicePose_t[0];
 
-    public bool pauseRendering = false;
+    static public bool pauseRendering = false;
 
 	private IEnumerator RenderLoop()
 	{
@@ -144,26 +144,26 @@ public class SteamVR_Render : MonoBehaviour
 
 			var vr = SteamVR.instance;
 
-			if (vr.compositor.CanRenderScene())
-			{
-				vr.compositor.SetTrackingSpace(trackingSpace);
-				SteamVR_Utils.QueueEventOnRenderThread(Unity.k_nRenderEventID_WaitGetPoses);
+			if (!vr.compositor.CanRenderScene())
+				continue;
 
-				// Hack to flush render event that was queued in Update (this ensures WaitGetPoses has returned before we grab the new values).
-				Unity.EventWriteString("[UnityMain] GetNativeTexturePtr - Begin");
-				SteamVR_Camera.GetSceneTexture(cameras[0].GetComponent<Camera>().hdr).GetNativeTexturePtr();
-				Unity.EventWriteString("[UnityMain] GetNativeTexturePtr - End");
+			vr.compositor.SetTrackingSpace(trackingSpace);
+			SteamVR_Utils.QueueEventOnRenderThread(Unity.k_nRenderEventID_WaitGetPoses);
 
-				vr.compositor.GetLastPoses(poses, gamePoses);
-				SteamVR_Utils.Event.Send("new_poses", poses);
-			}
+			// Hack to flush render event that was queued in Update (this ensures WaitGetPoses has returned before we grab the new values).
+			Unity.EventWriteString("[UnityMain] GetNativeTexturePtr - Begin");
+			SteamVR_Camera.GetSceneTexture(cameras[0].GetComponent<Camera>().hdr).GetNativeTexturePtr();
+			Unity.EventWriteString("[UnityMain] GetNativeTexturePtr - End");
+
+			vr.compositor.GetLastPoses(poses, gamePoses);
+			SteamVR_Utils.Event.Send("new_poses", poses);
 
 			var overlay = SteamVR_Overlay.instance;
 			if (overlay != null)
 				overlay.UpdateOverlay(vr);
 
-			RenderEye(vr, Hmd_Eye.Eye_Left);
-			RenderEye(vr, Hmd_Eye.Eye_Right);
+			RenderEye(vr, EVREye.Eye_Left);
+			RenderEye(vr, EVREye.Eye_Right);
 
 			// Move cameras back to head position so they can be tracked reliably
 			foreach (var c in cameras)
@@ -177,7 +177,7 @@ public class SteamVR_Render : MonoBehaviour
 		}
 	}
 
-	void RenderEye(SteamVR vr, Hmd_Eye eye)
+	void RenderEye(SteamVR vr, EVREye eye)
 	{
 		int i = (int)eye;
 		SteamVR_Render.eye = eye;
@@ -196,7 +196,7 @@ public class SteamVR_Render : MonoBehaviour
 			var camera = c.GetComponent<Camera>();
 			camera.targetTexture = SteamVR_Camera.GetSceneTexture(camera.hdr);
 			int cullingMask = camera.cullingMask;
-			if (eye == Hmd_Eye.Eye_Left)
+			if (eye == EVREye.Eye_Left)
 			{
 				camera.cullingMask &= ~rightMask;
 				camera.cullingMask |= leftMask;

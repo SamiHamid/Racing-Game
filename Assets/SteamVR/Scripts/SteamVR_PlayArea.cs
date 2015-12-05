@@ -34,16 +34,16 @@ public class SteamVR_PlayArea : MonoBehaviour
 	{
 		if (size == Size.Calibrated)
 		{
-			var error = HmdError.None;
+			var error = EVRInitError.None;
 			if (!SteamVR.active)
 			{
 				OpenVR.Init(ref error, EVRApplicationType.VRApplication_Other);
-				if (error != HmdError.None)
+				if (error != EVRInitError.None)
 					return false;
 			}
 
 			var pChaperone = OpenVR.GetGenericInterface(OpenVR.IVRChaperone_Version, ref error);
-			if (pChaperone == System.IntPtr.Zero || error != HmdError.None)
+			if (pChaperone == System.IntPtr.Zero || error != EVRInitError.None)
 			{
 				if (!SteamVR.active)
 					OpenVR.Shutdown();
@@ -266,9 +266,9 @@ public class SteamVR_PlayArea : MonoBehaviour
 		if (vr == null)
 			yield break;
 
-		var error = HmdError.None;
+		var error = EVRInitError.None;
 		var pChaperone = OpenVR.GetGenericInterface(OpenVR.IVRChaperone_Version, ref error);
-		if (pChaperone == System.IntPtr.Zero || error != HmdError.None)
+		if (pChaperone == System.IntPtr.Zero || error != EVRInitError.None)
 			yield break;
 
 		var chaperone = new CVRChaperone(pChaperone);

@@ -9,7 +9,6 @@ public class RankManager : MonoBehaviour {
 	public class Ranker : IComparer<Ranker>{
 		public GameObject racer;
 		public float raceCompletion;
-		public float speedRecord; //speed trap
 		
 		public int Compare(Ranker x, Ranker y){
 			
@@ -65,7 +64,7 @@ public class RankManager : MonoBehaviour {
 			
 			racerRanks[i].racer = racerStats[i].gameObject;
 			racerRanks[i].raceCompletion = racerStats[i].raceCompletion - ((float)racerStats[i].GetComponent<Statistics>().rank / 1000);
-			racerRanks[i].speedRecord = racerRanks[i].racer.GetComponent<Statistics>().speedRecord;
+			
 		}
 		
 		Ranker m_ranker = new Ranker();
@@ -75,11 +74,13 @@ public class RankManager : MonoBehaviour {
 	
 	
 	//Sets the car ranks accoding to the sorted list
-	void SetCarRank(){
+	public void SetCarRank(){
 		for(int r = 0; r < currentRacers; r++){
 			if(racerRanks[r].racer){
 				racerRanks[r].racer.GetComponent<Statistics>().rank = r + 1;
+                
 			}
+            
 		}
 	}
 }

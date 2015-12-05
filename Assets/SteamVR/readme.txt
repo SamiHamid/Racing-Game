@@ -1,4 +1,4 @@
-SteamVR plugin for Unity - v1.0.6
+SteamVR plugin for Unity - v1.0.7
 Copyright 2014-2015, Valve Corporation, All rights reserved.
 
 
@@ -13,6 +13,23 @@ Requirements:
 The SteamVR runtime must be installed.  This can be found in Steam under Tools.
 
 The plugin currently only supports Windows / DX11.
+
+
+Changes for v1.0.7:
+
+* Updated to SteamVR runtime v1448479831.
+
+* Many enums updated to reflect latest SDK cleanup (v0.9.12).
+
+* Various fixes to support color space changes in the SDK.
+
+* Render models set the layer on their child components now to match their own.
+
+* Added a bool 'Load Additive' to SteamVR_LoadLevel script to optionally load the level additively, as well as an optional 'Post Load Settle Time'.
+
+* Fixed some issues with SteamVR_LoadLevel fading to a color with 'Show Grid' set to false.
+
+* Fixed an issue with orienting the loading screen in the SteamVR_LoadLevel script when using 'Loading Screen Distance'.
 
 
 Changes for v1.0.6:

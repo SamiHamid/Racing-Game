@@ -474,13 +474,13 @@ public static class SteamVR_Utils
 		}
 		else
 		{
-			var error = HmdError.None;
+			var error = EVRInitError.None;
 			var pSystem = OpenVR.Init(ref error, EVRApplicationType.VRApplication_Other);
-			if (pSystem != System.IntPtr.Zero && error == HmdError.None)
+			if (pSystem != System.IntPtr.Zero && error == EVRInitError.None)
 			{
 				// Make sure we're using the proper version
 				pSystem = OpenVR.GetGenericInterface(OpenVR.IVRSystem_Version, ref error);
-				if (pSystem != System.IntPtr.Zero && error == HmdError.None)
+				if (pSystem != System.IntPtr.Zero && error == EVRInitError.None)
 				{
 					var system = new CVRSystem(pSystem);
 					result = fn(system, args);

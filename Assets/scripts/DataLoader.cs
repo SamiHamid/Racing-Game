@@ -29,5 +29,7 @@ public class DataLoader : MonoBehaviour {
 		
     	//load racers
 		RaceManager.instance.totalRacers = PlayerPrefs.GetInt("Opponents") + 1;
+
+    	
 	}
 }

@@ -51,7 +51,7 @@ public class Statistics : MonoBehaviour {
 	
 	void Initialize()
     {
-		lap = 1;
+        lap = 1;
 	}
 	
 	
@@ -171,9 +171,9 @@ public class Statistics : MonoBehaviour {
 	void FinishRace(){
 		
 		//Tell the RaceManager that player has finished the race
-		if(gameObject.tag == "Player"){
+		//if(gameObject.tag == "Player"){
 			RaceManager.instance.EndRace(rank);
-		}
+		//}
 
         GetComponent<CarController>().controllable = false;
 	

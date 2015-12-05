@@ -7,30 +7,32 @@ using System.IO;
 public class RaceManager : MonoBehaviour {
 	
 	public static RaceManager instance;
-	public int totalLaps = 3;
+   // public RankManager rank_manager;
+    public int totalLaps = 3;
 	public int totalRacers = 4; //The total number of racers (player included)
 	public int playerStartRank = 4; //The rank you will start the race as
 	public float raceDistance; //Your race track's distance.
 	public float countdownDelay = 3.0f;
+	public float initialCheckpointTime = 10.0f; //start time (Checkpoint race);
 	public GameObject playerCar;
 	public List <GameObject> opponentCars = new List <GameObject>();
 	public Transform pathContainer;
 	public Transform spawnpointContainer;
+	public Transform checkpointContainer;
 	public List<Transform> spawnpoints = new List <Transform>();
-	//public string playerName = "You";
-	//public List<string> opponentNamesList = new List<string>();
-	//public TextAsset opponentNames;
+	public string playerName = "You";
+	public List<string> opponentNamesList = new List<string>();
+	public TextAsset opponentNames;
 	public StringReader nameReader;
-	//public GameObject playerPointer, opponentPointer, racerName;
-	//public bool continueAfterFinish = true; //Should the racers keep driving after finish.
-	//public bool showRacerNames = true; //Should names appear above player cars
-	//public bool showRacerPointers = true; //Should minimap pointers appear above all racers
-	//public bool showRaceInfoMessages = true;//Show final lap indication , new best lap, speed trap & racer knockout information texts
-	//public bool forceWrongwayRespawn; //should the player get respawned if going the wrong way
+	public GameObject playerPointer, opponentPointer, racerName;
+	public bool continueAfterFinish = true; //Should the racers keep driving after finish.
+	public bool showRacerNames = true; //Should names appear above player cars
+	public bool showRacerPointers = true; //Should minimap pointers appear above all racers
+	public bool showRaceInfoMessages = true;//Show final lap indication , new best lap, speed trap & racer knockout information texts
+	public bool forceWrongwayRespawn; //should the player get respawned if going the wrong way
 	public bool raceStarted; //has the race began
-	public bool raceCompleted; //has the player car finished the race
+	public bool raceCompleted; //have the all cars finished the race
 	public bool racePaused; //is the game paused
-                            //public bool raceKO;//**LapKnockout Mode Only** has the player car been knockedOut
 
     //Countdown
     public GameObject Number1;
@@ -38,10 +40,11 @@ public class RaceManager : MonoBehaviour {
     public GameObject Number3;
     public GameObject GoObject;
 
+
     //Time Trial
     public Transform startPoint;
-	//public bool enableGhostVehicle = true;
-	//public GameObject activeGhostCar;
+	public bool enableGhostVehicle = true;
+	public GameObject activeGhostCar;
 	
 	//Rewards
 	public List<RaceRewards> raceRewards = new List<RaceRewards>();
@@ -49,14 +52,15 @@ public class RaceManager : MonoBehaviour {
 	void Awake () {
 		//create an instance
 		instance = this;
-	}
+        //rank_manager = GetComponent<RankManager>();
+    }
 	
 	void Start(){
 		InitializeRace();
 	}
-
-	void InitializeRace()
-    {
+	
+	void InitializeRace(){
+		
 		ConfigureNodes();
 		SpawnRacers();
 	}
@@ -104,20 +108,20 @@ public class RaceManager : MonoBehaviour {
 				Instantiate(opponentCars[Random.Range(0,opponentCars.Count)],spawnpoints[i].position,spawnpoints[i].rotation);
 			}
 			else if(spawnpoints[i] == spawnpoints[playerStartRank-1] && playerCar){
+				
 					Instantiate(playerCar,spawnpoints[i].position,spawnpoints[i].rotation);
-			}
-		}
+            }
+        }
 		
 		//Set racer names, pointers and begin countdown after spawning the racers
 		RankManager.instance.RefreshRacerCount();
-		//SetRacerPreferences();
+		
 	}
 
 
-    void OnTriggerEnter(Collider other){
-		
-
-        if(other.transform.name.Equals("OVRPlayerController") || other.name.Equals("[CameraRig]"))
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.name.Equals("OVRPlayerController") || other.name.Equals("[CameraRig]"))
         {
             Invoke("StartRace", countdownDelay + 1);
             Invoke("No3", 1f);
@@ -153,53 +157,59 @@ public class RaceManager : MonoBehaviour {
         GoObject.SetActive(true);
     }
 
+
     private void DisableGo()
     {
         GoObject.SetActive(false);
     }
 
-    void Update(){
+
+
+    void Update()
+    {
 		//Pause the race with "Escape".
 		if(!raceCompleted && Input.GetKeyDown(KeyCode.Escape)){
 			PauseRace();
-		}
+		}    
 	}
 	
-	public void StartRace ()
-    {
+	public void StartRace () {
 		//enable cars to start racing
 		CarController[] cars = GameObject.FindObjectsOfType(typeof(CarController)) as CarController[];
 		foreach(CarController c in cars){
-            c.controllable = true;
+			c.controllable = true;
 		}
-        
-		raceStarted = true; 
-
-    }
+		raceStarted = true;
+	}
 	
-	public void EndRace(int rank){
-		raceCompleted = true;
-		
-		//update UI panels
-		//RaceUI.instance.HandlePanelActivation();
-		
-		//Debug.Log("You finished " + rank + " in " + _raceType + " race");
+	public void EndRace(int rank)
+    {
+        if (AllRacersFinished() == true)
+        {
+            raceCompleted = true;
 
-		//Race Rewards
-		if(raceRewards.Count >= rank){
-			Debug.Log("Race Rewards - " + "Currency : " + raceRewards[rank - 1].currency + " Car Unlock : " + raceRewards[rank - 1].carUnlock + " Track Unlock : " + raceRewards[rank - 1].trackUnlock);
-			//give currency
-			PlayerData.AddCurrency(raceRewards[rank - 1].currency);
-			//unlock car
-			if(raceRewards[rank - 1].carUnlock != "")
-				PlayerData.Unlock(raceRewards[rank - 1].carUnlock);
-			//unlock track
-			if(raceRewards[rank - 1].trackUnlock != "")
-				PlayerData.Unlock(raceRewards[rank - 1].trackUnlock);
-           
-            //sets reward text in RaceUI
-           // RaceUI.instance.SetRewardText(raceRewards[rank - 1].currency.ToString("N0"), raceRewards[rank - 1].carUnlock, raceRewards[rank - 1].trackUnlock);
-		}
+            //update UI panels
+            //RaceUI.instance.HandlePanelActivation();
+
+            //Debug.Log("You finished " + rank + " in " + _raceType + " race");
+
+            //Race Rewards
+            if (raceRewards.Count >= rank)
+            {
+                Debug.Log("Race Rewards - " + "Currency : " + raceRewards[rank - 1].currency + " Car Unlock : " + raceRewards[rank - 1].carUnlock + " Track Unlock : " + raceRewards[rank - 1].trackUnlock);
+                //give currency
+                PlayerData.AddCurrency(raceRewards[rank - 1].currency);
+                //unlock car
+                if (raceRewards[rank - 1].carUnlock != "")
+                    PlayerData.Unlock(raceRewards[rank - 1].carUnlock);
+                //unlock track
+                if (raceRewards[rank - 1].trackUnlock != "")
+                    PlayerData.Unlock(raceRewards[rank - 1].trackUnlock);
+
+                //sets reward text in RaceUI
+                // RaceUI.instance.SetRewardText(raceRewards[rank - 1].currency.ToString("N0"), raceRewards[rank - 1].carUnlock, raceRewards[rank - 1].trackUnlock);
+            }
+        }
 	}
 	
 	
@@ -220,8 +230,6 @@ public class RaceManager : MonoBehaviour {
 		}
 	}
 	
-	
-	
 	//Format a float to a time string
 	public string FormatTime(float time){
 		int minutes  = (int)Mathf.Floor(time / 60);
@@ -230,21 +238,23 @@ public class RaceManager : MonoBehaviour {
 		
 		return string.Format("{0:00}:{1:00}:{2:00}", minutes, seconds, milliseconds);
 	}
-	
-	
-	// Checks if all racers have finished
-	public bool AllRacersFinished(){
-		bool allFinished = false;
-		Statistics[] allRacers = GameObject.FindObjectsOfType(typeof(Statistics)) as Statistics[];
-		for(int i = 0; i < allRacers.Length; i++){
-			if(allRacers[i].finishedRace)
-				allFinished=  true;
-			else
-				allFinished = false;
-		}
-		
-		return allFinished;
-	}
+
+
+    // Checks if all racers have finished
+    public bool AllRacersFinished()
+    {
+        bool allFinished = false;
+        Statistics[] allRacers = GameObject.FindObjectsOfType(typeof(Statistics)) as Statistics[];
+        for (int i = 0; i < allRacers.Length; i++)
+        {
+            if (allRacers[i].finishedRace)
+                allFinished = true;
+            else
+                allFinished = false;
+        }
+
+        return allFinished;
+    }
 	
 	//Used to calculate track distance(in Meters) & rotate the nodes correctly
 	void ConfigureNodes(){
@@ -268,6 +278,7 @@ public class RaceManager : MonoBehaviour {
 	
 	//used to respawn a racer
 	public void RespawnRacer(Transform racer, Transform node, float ignoreCollisionTime){
+        if(raceCompleted == false)
 		StartCoroutine(Respawn(racer,node,ignoreCollisionTime));
 	}
 	

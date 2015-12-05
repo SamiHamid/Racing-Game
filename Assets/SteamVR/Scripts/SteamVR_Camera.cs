@@ -62,8 +62,12 @@ public class SteamVR_Camera : MonoBehaviour
 
 		if (_sceneTexture == null)
 		{
-			_sceneTexture = new RenderTexture(w, h, 0, format, RenderTextureReadWrite.Linear);
+			_sceneTexture = new RenderTexture(w, h, 0, format);
 			_sceneTexture.antiAliasing = aa;
+
+			// OpenVR assumes floating point render targets are linear unless otherwise specified.
+			var colorSpace = (hdr && QualitySettings.activeColorSpace == ColorSpace.Gamma) ? EColorSpace.Gamma : EColorSpace.Auto;
+            Unity.SetColorSpace(colorSpace);
 		}
 
 		return _sceneTexture;
@@ -310,7 +314,7 @@ public class SteamVR_Camera : MonoBehaviour
 	void OnPreRender()
 	{
 		if (flip)
-			flip.enabled = (SteamVR_Render.Top() == this && SteamVR.instance.graphicsAPI == GraphicsAPIConvention.API_DirectX);
+			flip.enabled = (SteamVR_Render.Top() == this && SteamVR.instance.graphicsAPI == EGraphicsAPIConvention.API_DirectX);
 
 		var headCam = head.GetComponent<Camera>();
 		if (headCam != null)
@@ -331,7 +335,7 @@ public class SteamVR_Camera : MonoBehaviour
 		if (SteamVR_Render.Top() == this)
 		{
 			int eventID;
-			if (SteamVR_Render.eye == Hmd_Eye.Eye_Left)
+			if (SteamVR_Render.eye == EVREye.Eye_Left)
 			{
 				// Get gpu started on work early to avoid bubbles at the top of the frame.
 				SteamVR_Utils.QueueEventOnRenderThread(Unity.k_nRenderEventID_Flush);

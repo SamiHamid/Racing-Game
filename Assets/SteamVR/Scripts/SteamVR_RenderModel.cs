@@ -63,16 +63,16 @@ public class SteamVR_RenderModel : MonoBehaviour
 			{
 				if (_instance == null)
 				{
-					var error = HmdError.None;
+					var error = EVRInitError.None;
 					if (!SteamVR.active)
 					{
 						OpenVR.Init(ref error, EVRApplicationType.VRApplication_Other);
-						if (error != HmdError.None)
+						if (error != EVRInitError.None)
 							return null;
 					}
 
 					var pRenderModels = OpenVR.GetGenericInterface(OpenVR.IVRRenderModels_Version, ref error);
-					if (pRenderModels == System.IntPtr.Zero || error != HmdError.None)
+					if (pRenderModels == System.IntPtr.Zero || error != EVRInitError.None)
 					{
 						Debug.LogError("Failed to load IVRRenderModels interface version " + OpenVR.IVRRenderModels_Version);
 						if (!SteamVR.active)
@@ -120,8 +120,8 @@ public class SteamVR_RenderModel : MonoBehaviour
 	public void UpdateModel()
 	{
 		var vr = SteamVR.instance;
-		var error = TrackedPropertyError.TrackedProp_Success;
-		var capacity = vr.hmd.GetStringTrackedDeviceProperty((uint)index, TrackedDeviceProperty.Prop_RenderModelName_String, null, 0, ref error);
+		var error = ETrackedPropertyError.TrackedProp_Success;
+		var capacity = vr.hmd.GetStringTrackedDeviceProperty((uint)index, ETrackedDeviceProperty.Prop_RenderModelName_String, null, 0, ref error);
 		if (capacity <= 1)
 		{
 			Debug.LogError("Failed to get render model name for tracked object " + index);
@@ -129,7 +129,7 @@ public class SteamVR_RenderModel : MonoBehaviour
 		}
 
 		var buffer = new System.Text.StringBuilder((int)capacity);
-		vr.hmd.GetStringTrackedDeviceProperty((uint)index, TrackedDeviceProperty.Prop_RenderModelName_String, buffer, capacity, ref error);
+		vr.hmd.GetStringTrackedDeviceProperty((uint)index, ETrackedDeviceProperty.Prop_RenderModelName_String, buffer, capacity, ref error);
 
 		SetModel(buffer.ToString());
 	}
@@ -338,6 +338,7 @@ public class SteamVR_RenderModel : MonoBehaviour
 			{
 				t = new GameObject(componentName.ToString()).transform;
 				t.parent = transform;
+				t.gameObject.layer = gameObject.layer;
 
 				// Also create a child 'attach' object for attaching things.
 				var attach = new GameObject(k_localTransformName).transform;
@@ -345,6 +346,7 @@ public class SteamVR_RenderModel : MonoBehaviour
 				attach.localPosition = Vector3.zero;
 				attach.localRotation = Quaternion.identity;
 				attach.localScale = Vector3.one;
+				attach.gameObject.layer = gameObject.layer;
 			}
 
 			// Reset transform.
@@ -488,7 +490,7 @@ public class SteamVR_RenderModel : MonoBehaviour
 						attach.rotation = attachTransform.rot;
 					}
 
-					bool visible = (componentState.uProperties & (uint)EVRComponentProperty.VRComponentProperty_IsVisible) != 0;
+					bool visible = (componentState.uProperties & (uint)EVRComponentProperty.IsVisible) != 0;
 					if (visible != child.gameObject.activeSelf)
 					{
 						child.gameObject.SetActive(visible);
