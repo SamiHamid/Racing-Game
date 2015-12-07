@@ -3,10 +3,12 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Statistics : MonoBehaviour {
-	
-	//Int
-	public int rank;//current rank
+public class Statistics : MonoBehaviour
+{
+    public static Statistics instance;
+
+    //Int
+    public int rank;//current rank
 	public int lap; //current lap
 	
 	
@@ -36,8 +38,9 @@ public class Statistics : MonoBehaviour {
 	[HideInInspector]public bool goingWrongway;
 	[HideInInspector]public bool passedAllNodes;
 	[HideInInspector]public float speedRecord;//speed trap top speed
-	
-	void OnEnable () {
+    
+
+    void OnEnable () {
 		//Disable components of no race manager is found.
 		if(!RaceManager.instance){
 			this.enabled = false;
@@ -45,7 +48,7 @@ public class Statistics : MonoBehaviour {
 		}
 		else{
 			FindPath();
-			Initialize();
+			//Initialize();
 		}
 	}
 	
@@ -53,6 +56,18 @@ public class Statistics : MonoBehaviour {
     {
         lap = 1;
 	}
+
+    void Awake()
+    {
+        //create an instance
+        instance = this;
+        //rank_manager = GetComponent<RankManager>();
+    }
+
+    void Start()
+    {
+        Initialize();
+    }
 	
 	
 	void FindPath(){
@@ -129,23 +144,23 @@ public class Statistics : MonoBehaviour {
 	//Called on new lap
 	public void NewLap(){
 		
-		if(gameObject.tag =="Player"){
+		/*if(gameObject.tag =="Player"){
 			CheckForBestTime();
-		}
+		}*/
 		
 		//Reset our passed nodes & checkpoints
-		for(int i = 0; i < passednodes.Count; i++){
+		/*for(int i = 0; i < passednodes.Count; i++){
 			passednodes[i] = false;
 		}
 	
 			if(lap < RaceManager.instance.totalLaps){
 				lap++; 
-			}
-			else{
-				if(!knockedOut && !finishedRace){
+			}*/
+			/*else{
+				if(!finishedRace){
 					FinishRace();
 				}
-			}
+			}*/
 		
         		
 		//Set the previous lap time and reset the lap counter
@@ -167,18 +182,21 @@ public class Statistics : MonoBehaviour {
 			PlayerPrefs.Save();
 		}
 	}
+
+    
 	
-	void FinishRace(){
-		
+	/*void FinishRace()
+    {
+	    	
 		//Tell the RaceManager that player has finished the race
 		//if(gameObject.tag == "Player"){
 			RaceManager.instance.EndRace(rank);
 		//}
 
-        GetComponent<CarController>().controllable = false;
+       // GetComponent<CarController>().controllable = false;
 	
 		finishedRace = true;	
-	}
+	}*/
 	
 	
 	// Switches a player car to an AI controlled car
@@ -241,7 +259,20 @@ public class Statistics : MonoBehaviour {
 	void OnTriggerEnter(Collider other){
 		//Finish line
 		if(other.tag == "LapPoint" && passedAllNodes){
-			NewLap();
-		}
+            //NewLap();
+            for (int i = 0; i < passednodes.Count; i++)
+            {
+                passednodes[i] = false;
+            }
+
+            lap++;
+
+           /* if (lap > RaceManager.instance.totalLaps)
+            {
+                GetComponent<CarController>().controllable = false;
+            }*/
+
+
+        }
 	}
 }

@@ -170,7 +170,7 @@ public class RaceManager : MonoBehaviour {
 		//Pause the race with "Escape".
 		if(!raceCompleted && Input.GetKeyDown(KeyCode.Escape)){
 			PauseRace();
-		}    
+		}  
 	}
 	
 	public void StartRace () {
@@ -184,9 +184,10 @@ public class RaceManager : MonoBehaviour {
 	
 	public void EndRace(int rank)
     {
-        if (AllRacersFinished() == true)
+       // if (AllRacersFinished() == true)
         {
             raceCompleted = true;
+            Debug.Log("Race Completed");
 
             //update UI panels
             //RaceUI.instance.HandlePanelActivation();
@@ -194,7 +195,7 @@ public class RaceManager : MonoBehaviour {
             //Debug.Log("You finished " + rank + " in " + _raceType + " race");
 
             //Race Rewards
-            if (raceRewards.Count >= rank)
+           /* if (raceRewards.Count >= rank)
             {
                 Debug.Log("Race Rewards - " + "Currency : " + raceRewards[rank - 1].currency + " Car Unlock : " + raceRewards[rank - 1].carUnlock + " Track Unlock : " + raceRewards[rank - 1].trackUnlock);
                 //give currency
@@ -208,7 +209,7 @@ public class RaceManager : MonoBehaviour {
 
                 //sets reward text in RaceUI
                 // RaceUI.instance.SetRewardText(raceRewards[rank - 1].currency.ToString("N0"), raceRewards[rank - 1].carUnlock, raceRewards[rank - 1].trackUnlock);
-            }
+            }*/
         }
 	}
 	
@@ -247,10 +248,17 @@ public class RaceManager : MonoBehaviour {
         Statistics[] allRacers = GameObject.FindObjectsOfType(typeof(Statistics)) as Statistics[];
         for (int i = 0; i < allRacers.Length; i++)
         {
-            if (allRacers[i].finishedRace)
+            if (allRacers[i].lap > totalLaps)
+            {
                 allFinished = true;
+                Debug.Log("All Finished");
+               
+            }
             else
+            {
+                Debug.Log("Not All Finished");
                 allFinished = false;
+            }
         }
 
         return allFinished;
