@@ -170,9 +170,9 @@ public class CarController : MonoBehaviour {
 			break;
 		}
 		
-		//Boost
-		if(currentSpeed < speedLimit && motorInput > 0){
-			rigid.AddForce(transform.forward * boost);
+		//Nitro Boost
+		if( Input.GetKeyDown(KeyCode.Space)){
+			rigid.AddForce(transform.forward * boost, ForceMode.Acceleration);
 		}
 		
 		//Steering
