@@ -109,7 +109,8 @@ public class CarController : MonoBehaviour {
 		
 		if(controllable){
 			Drive();
-			Brake();
+            
+                Brake();
 		}
 		else{
 			Stop();
@@ -171,7 +172,8 @@ public class CarController : MonoBehaviour {
 		}
 		
 		//Nitro Boost
-		if( Input.GetKeyDown(KeyCode.Space)){
+		if( Input.GetKeyDown(KeyCode.Space) || Input.GetKey(KeyCode.Joystick2Button0) || Input.GetKey(KeyCode.Joystick1Button1) && tag.Equals("Player"))
+        {
 			rigid.AddForce(transform.forward * boost, ForceMode.Acceleration);
 		}
 		
@@ -212,10 +214,11 @@ public class CarController : MonoBehaviour {
 	
 	void Brake(){
 		//Footbrake
-		if(!reversing && brakeInput > 0.0f){
-			
-			//add a backward force to help stop the car
-			rigid.AddForce(-transform.forward * 250);
+		if(!reversing && brakeInput > 0.0f)
+        {
+            
+            //add a backward force to help stop the car
+            rigid.AddForce(-transform.forward * 250);
 			
 			if(_propulsion == Propulsion.RWD){
 				RL_WheelCollider.brakeTorque = brakePower * brakeInput;

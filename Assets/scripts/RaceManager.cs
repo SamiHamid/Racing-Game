@@ -7,29 +7,26 @@ using System.IO;
 public class RaceManager : MonoBehaviour {
 	
 	public static RaceManager instance;
-   // public RankManager rank_manager;
-    public int totalLaps = 3;
+  
+    public int totalLaps = 1;
 	public int totalRacers = 4; //The total number of racers (player included)
 	public int playerStartRank = 4; //The rank you will start the race as
 	public float raceDistance; //Your race track's distance.
-	public float countdownDelay = 3.0f;
-	public float initialCheckpointTime = 10.0f; //start time (Checkpoint race);
+    [HideInInspector]public float countdownDelay = 3.0f;
 	public GameObject playerCar;
 	public List <GameObject> opponentCars = new List <GameObject>();
 	public Transform pathContainer;
 	public Transform spawnpointContainer;
-	public Transform checkpointContainer;
-	public List<Transform> spawnpoints = new List <Transform>();
-	public string playerName = "You";
-	public List<string> opponentNamesList = new List<string>();
-	public TextAsset opponentNames;
-	public StringReader nameReader;
-	public GameObject playerPointer, opponentPointer, racerName;
-	public bool continueAfterFinish = true; //Should the racers keep driving after finish.
-	public bool showRacerNames = true; //Should names appear above player cars
-	public bool showRacerPointers = true; //Should minimap pointers appear above all racers
-	public bool showRaceInfoMessages = true;//Show final lap indication , new best lap, speed trap & racer knockout information texts
-	public bool forceWrongwayRespawn; //should the player get respawned if going the wrong way
+	[HideInInspector]public List<Transform> spawnpoints = new List <Transform>();
+	//public string playerName = "You";
+	//public List<string> opponentNamesList = new List<string>();
+	//public TextAsset opponentNames;
+	//public StringReader nameReader;
+	//public GameObject playerPointer, opponentPointer, racerName;
+	//public bool showRacerNames = true; //Should names appear above player cars
+	//public bool showRacerPointers = true; //Should minimap pointers appear above all racers
+	//public bool showRaceInfoMessages = true;//Show final lap indication , new best lap, speed trap & racer knockout information texts
+	//public bool forceWrongwayRespawn; //should the player get respawned if going the wrong way
 	public bool raceStarted; //has the race began
 	public bool raceCompleted; //have the all cars finished the race
 	public bool racePaused; //is the game paused
@@ -40,23 +37,17 @@ public class RaceManager : MonoBehaviour {
     public GameObject Number3;
     public GameObject GoObject;
 
-
-    //Time Trial
-    public Transform startPoint;
-	public bool enableGhostVehicle = true;
-	public GameObject activeGhostCar;
-	
 	//Rewards
 	public List<RaceRewards> raceRewards = new List<RaceRewards>();
 	
 	void Awake () {
 		//create an instance
 		instance = this;
-        //rank_manager = GetComponent<RankManager>();
     }
 	
-	void Start(){
-		InitializeRace();
+	void Start()
+    {
+        InitializeRace();
 	}
 	
 	void InitializeRace(){
@@ -168,9 +159,13 @@ public class RaceManager : MonoBehaviour {
     void Update()
     {
 		//Pause the race with "Escape".
-		if(!raceCompleted && Input.GetKeyDown(KeyCode.Escape)){
+		if(!raceCompleted && Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Joystick2Button7) || Input.GetKeyDown(KeyCode.Joystick1Button9))
+        {
 			PauseRace();
-		}  
+		}
+
+        if (AllRacersFinished() == true)
+            EndRace();
 	}
 	
 	public void StartRace () {
@@ -182,12 +177,11 @@ public class RaceManager : MonoBehaviour {
 		raceStarted = true;
 	}
 	
-	public void EndRace(int rank)
+	public void EndRace()
     {
        // if (AllRacersFinished() == true)
         {
             raceCompleted = true;
-            Debug.Log("Race Completed");
 
             //update UI panels
             //RaceUI.instance.HandlePanelActivation();
@@ -244,21 +238,26 @@ public class RaceManager : MonoBehaviour {
     // Checks if all racers have finished
     public bool AllRacersFinished()
     {
+        int finished = 0;
+
         bool allFinished = false;
         Statistics[] allRacers = GameObject.FindObjectsOfType(typeof(Statistics)) as Statistics[];
         for (int i = 0; i < allRacers.Length; i++)
-        {
+        { 
+
             if (allRacers[i].lap > totalLaps)
             {
+                finished++;
+            }
+
+            if (finished == allRacers.Length)
+            {
                 allFinished = true;
-                Debug.Log("All Finished");
-               
             }
             else
             {
-                Debug.Log("Not All Finished");
                 allFinished = false;
-            }
+            }  
         }
 
         return allFinished;

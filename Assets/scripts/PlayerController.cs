@@ -20,12 +20,25 @@ public class PlayerController : MonoBehaviour {
 	
 	void DesktopControl(){
 		
+        //Keyboard:
 		car_controller.steerInput = Mathf.Clamp(Input.GetAxis("Horizontal"),-1,1);
 		car_controller.motorInput = Mathf.Clamp01(Input.GetAxis("Vertical"));
 		car_controller.brakeInput = Mathf.Clamp01(-Input.GetAxis("Vertical"));
-		
-		//Respawn the car if we press the Enter key
-		if(Input.GetKey(KeyCode.Return) && RaceManager.instance){
+
+        //XBox Controller:
+        car_controller.steerInput = Input.GetAxis("AnalogueSteerXBox360");
+        car_controller.motorInput = -Input.GetAxis("TriggersXBox360");
+        car_controller.brakeInput = Input.GetAxis("TriggersXBox360");
+
+        //Logitech Controller:
+        car_controller.steerInput = Input.GetAxis("AnalogueSteerLogitech");
+        car_controller.motorInput = -Input.GetAxis("TriggersLogitech");
+        car_controller.brakeInput = Input.GetAxis("TriggersLogitech");
+        
+
+        //Respawn the car if we press the Enter key
+        if (Input.GetKey(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick2Button6) || Input.GetKeyDown(KeyCode.Joystick1Button8))
+        {
 				Respawn();
 		}
 	}
