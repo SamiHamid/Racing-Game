@@ -176,6 +176,8 @@ public class RaceManager : MonoBehaviour {
 		}
 		raceStarted = true;
 	}
+
+    //public void 
 	
 	public void EndRace()
     {

@@ -167,7 +167,7 @@ public class Statistics : MonoBehaviour
 		prevLapTime = currentLapTime;
 	}
 	
-	void CheckForBestTime(){
+	/*void CheckForBestTime(){
 		
 		//Save a new best time if we dont currently have one
 		if(PlayerPrefs.GetFloat("BestTimeFloat"+Application.loadedLevelName) == 0){
@@ -181,7 +181,7 @@ public class Statistics : MonoBehaviour
 			PlayerPrefs.SetFloat("BestTimeFloat"+Application.loadedLevelName,lapTimeCounter);
 			PlayerPrefs.Save();
 		}
-	}
+	}*/
 
     
 	

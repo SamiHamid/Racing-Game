@@ -7,11 +7,14 @@ public class SceneManager : MonoBehaviour
     public WaypointsContainer[] waypointsContainer;
     public SpawnpointContainer[] spawnpointContainer;
     public RaceManager race_manager;
+    public UpgradeMenu upgrade_menu;
+    public RewardSequence reward_sequence;
+
 
     // Use this for initialization
     void Start()
     {
-       
+        
     }
 
     void InitializeRaceManager()
@@ -57,6 +60,21 @@ public class SceneManager : MonoBehaviour
             race_manager.spawnpointContainer = spawnpointContainer[2].transform;
         }
 
+        if (reward_sequence.isRewardSequenceFinished)
+        {
+            StartCoroutine(ViewUpgradeMenu());
+        }
+
 
     }
+
+
+
+    IEnumerator ViewUpgradeMenu()
+    {
+        yield return new WaitForSeconds(3f);
+        upgrade_menu.gameObject.SetActive(true);
+    }
+
 }
+
