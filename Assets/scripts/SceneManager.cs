@@ -10,7 +10,7 @@ public class SceneManager : MonoBehaviour
     public UpgradeMenu upgrade_menu;
     public RewardSequence reward_sequence;
 
-
+   public bool isTrackSelected = false;
     // Use this for initialization
     void Start()
     {
@@ -28,10 +28,9 @@ public class SceneManager : MonoBehaviour
     }
 	
 	// Update is called once per frame
-	void Update ()
+	void Update ()   
     {
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick2Button7) ||  Input.GetKeyDown(KeyCode.Joystick1Button1))
-            InitializeRaceManager();
+        
 
         if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -40,6 +39,7 @@ public class SceneManager : MonoBehaviour
             tracksContainer[0].SetActive(true);
             race_manager.pathContainer = waypointsContainer[0].transform;
             race_manager.spawnpointContainer = spawnpointContainer[0].transform;
+            isTrackSelected = true;
 
         }
         else if (Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.Alpha2))
@@ -49,7 +49,7 @@ public class SceneManager : MonoBehaviour
             tracksContainer[1].SetActive(true);
             race_manager.pathContainer = waypointsContainer[1].transform;
             race_manager.spawnpointContainer = spawnpointContainer[1].transform;
-
+            isTrackSelected = true;
         }
         else if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3))
         {
@@ -58,13 +58,21 @@ public class SceneManager : MonoBehaviour
             tracksContainer[2].SetActive(true);
             race_manager.pathContainer = waypointsContainer[2].transform;
             race_manager.spawnpointContainer = spawnpointContainer[2].transform;
+            isTrackSelected = true;
         }
 
-        if (reward_sequence.isRewardSequenceFinished)
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick2Button7) || Input.GetKeyDown(KeyCode.Joystick1Button1))
         {
-            StartCoroutine(ViewUpgradeMenu());
-        }
+            if (isTrackSelected == true)
+                InitializeRaceManager();
+            else
+                Debug.LogError("Please choose a track");
 
+            if (reward_sequence.isRewardSequenceFinished)
+            {
+                StartCoroutine(ViewUpgradeMenu());
+            }
+        }
 
     }
 

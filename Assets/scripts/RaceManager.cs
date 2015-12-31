@@ -54,6 +54,7 @@ public class RaceManager : MonoBehaviour {
 		
 		ConfigureNodes();
 		SpawnRacers();
+        StartCountdown();
 	}
 	
 	void SpawnRacers(){
@@ -110,17 +111,15 @@ public class RaceManager : MonoBehaviour {
 	}
 
 
-    void OnTriggerEnter(Collider other)
+    void StartCountdown()
     {
-        if (other.transform.name.Equals("OVRPlayerController") || other.name.Equals("[CameraRig]"))
-        {
-            Invoke("StartRace", countdownDelay + 1);
-            Invoke("No3", 1f);
-            Invoke("No2", 2f);
-            Invoke("No1", 3f);
-            Invoke("Go", 4f);
-            Invoke("DisableGo", 5f);
-        }
+        Invoke("StartRace", countdownDelay + 1);
+        Invoke("No3", 1f);
+        Invoke("No2", 2f);
+        Invoke("No1", 3f);
+        Invoke("Go", 4f);
+        Invoke("DisableGo", 5f);
+        
     }
 
     private void No1()
