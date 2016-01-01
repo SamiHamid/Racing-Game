@@ -64,16 +64,17 @@ public class SceneManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick2Button7) || Input.GetKeyDown(KeyCode.Joystick1Button1))
         {
             if (isTrackSelected == true)
-                InitializeRaceManager();
-            else
-                Debug.LogError("Please choose a track");
-
-            if (reward_sequence.isRewardSequenceFinished)
             {
-                StartCoroutine(ViewUpgradeMenu());
+                InitializeRaceManager();
             }
+            else
+                Debug.LogError("Please choose a track"); 
         }
 
+        if (reward_sequence.isRewardSequenceFinished)
+        {
+            StartCoroutine(ViewUpgradeMenu());
+        }
     }
 
 
