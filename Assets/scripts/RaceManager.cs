@@ -285,51 +285,17 @@ public class RaceManager : MonoBehaviour {
 	}
 	
 	//used to respawn a racer
-	public void RespawnRacer(Transform racer, Transform node, float ignoreCollisionTime){
+	public void RespawnRacer(Transform racer, Transform node){
         if(raceCompleted == false)
-		StartCoroutine(Respawn(racer,node,ignoreCollisionTime));
+		Respawn(racer,node);
 	}
 	
-	IEnumerator Respawn(Transform racer, Transform node, float ignoreCollisionTime){
+	public void Respawn(Transform racer, Transform node){
 		//Flip the car over and place it at the last passed node
 		racer.rotation = Quaternion.LookRotation(racer.forward);
 		racer.GetComponent<Rigidbody>().velocity = Vector3.zero;
 		racer.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 		racer.position = new Vector3(node.position.x, node.position.y + 2.0f, node.position.z);
 		racer.rotation = node.rotation;
-		
-		ChangeLayer(racer,"IgnoreCollision");
-		yield return new WaitForSeconds(ignoreCollisionTime);
-		ChangeLayer(racer,"Default");
-	}
-	
-	//used to change a racers layer to "ignore collision" after being knocked out & on respawn
-	public void ChangeLayer(Transform racer, string LayerName){
-		for (int i = 0; i < racer.childCount; i++){
-			racer.GetChild(i).gameObject.layer = LayerMask.NameToLayer(LayerName);
-			ChangeLayer(racer.GetChild(i), LayerName);
-		}
-	}
-	
-	
-	//used to change a racers material when creating a ghost car
-	public void ChangeMaterial(Transform racer, string MaterialName){
-		Transform[] m = racer.GetComponentsInChildren<Transform>();
-		
-		foreach(Transform t in m){
-			if(t.GetComponent<Renderer>()){
-				if(t.GetComponent<Renderer>().materials.Length == 1){
-					t.gameObject.GetComponent<Renderer>().material = (Material)Resources.Load("Material/" + MaterialName);
-				}
-				else{
-					Material[] newMats = new Material[t.GetComponent<Renderer>().materials.Length];
-					for(int i = 0; i < newMats.Length; i++){
-						newMats[i] = (Material)Resources.Load("Material/" + MaterialName);
-					}
-					
-					t.gameObject.GetComponent<Renderer>().materials = newMats;
-				}
-			}
-		}
 	}
 }

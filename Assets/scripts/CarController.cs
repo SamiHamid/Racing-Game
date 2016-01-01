@@ -56,7 +56,7 @@ public class CarController : MonoBehaviour {
 	public GameObject steeringWheel;
 	public float slipstreamRayHeight = 0.5f; //height of the slipstream ray
 	private float speedLimit;
-	private float impactForce = 5.0f; //the impact force required to play a collision sound
+	//private float impactForce = 5.0f; //the impact force required to play a collision sound
 	private Vector3 velocityDir;
 	private float currentRotation;
 	private float drag = 0.0f;

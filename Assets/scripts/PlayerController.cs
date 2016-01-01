@@ -39,6 +39,6 @@ public class PlayerController : MonoBehaviour {
 	
 	public void Respawn(){
 		if(RaceManager.instance.raceStarted)
-			RaceManager.instance.RespawnRacer(transform,GetComponent<Statistics>().lastPassedNode,3.0f);
+			RaceManager.instance.RespawnRacer(transform,GetComponent<Statistics>().lastPassedNode);
 	}
 }

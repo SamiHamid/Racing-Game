@@ -251,7 +251,7 @@ public class Statistics : MonoBehaviour
 		//} 
 		
 		if(reviveTimer >= 5.0f){
-			RaceManager.instance.RespawnRacer(transform,lastPassedNode,3.0f);
+			RaceManager.instance.RespawnRacer(transform,lastPassedNode);
 			reviveTimer = 0.0f;
 		}	
 	}

@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
 using UnityEngine;
+
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
-
-
-    public class WaypointsContainer : MonoBehaviour
+public class WaypointsContainer : MonoBehaviour
     {
         public WaypointList waypointList = new WaypointList();
         [SerializeField] private bool smoothRoute = true;
@@ -216,8 +217,10 @@ using UnityEditor;
     
 }
 
+#if UNITY_EDITOR
+[ExecuteInEditMode]
 
-    [CustomPropertyDrawer(typeof (WaypointsContainer.WaypointList))]
+[CustomPropertyDrawer(typeof (WaypointsContainer.WaypointList))]
     public class WaypointListDrawer : PropertyDrawer
     {
         private float lineHeight = 18;
@@ -376,3 +379,4 @@ using UnityEditor;
         }
 }
 
+#endif

@@ -267,7 +267,7 @@ public class SteeringBehaviours : MonoBehaviour {
 		if(RaceManager.instance.raceStarted && car_controller.currentSpeed <= 5.0f){
 			stuckTimer += Time.deltaTime;
 			if(stuckTimer >= 10.0f){
-				RaceManager.instance.RespawnRacer(transform,GetComponent<Statistics>().lastPassedNode,3.0f);
+				RaceManager.instance.RespawnRacer(transform,GetComponent<Statistics>().lastPassedNode);
 				stuckTimer = 0.0f;
 			}
 		}
