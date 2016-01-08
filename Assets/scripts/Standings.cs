@@ -67,8 +67,9 @@ public class Standings : MonoBehaviour
                     RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<CarController>().controllable = false;
 
                     yield return new WaitForSeconds(3);
-                    //RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().enabled = false;
-                    RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().gameObject.SetActive(false);
+
+                    RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().enabled = false;
+                    
                     RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<Rigidbody>().isKinematic = true;
 
                     RankManager.instance.racerRanks[i].racer.gameObject.transform.position = Vector3.Lerp(RankManager.instance.racerRanks[i].racer.gameObject.transform.position, endMarker1.position, fracJourney1);
@@ -91,8 +92,9 @@ public class Standings : MonoBehaviour
                     RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<CarController>().controllable = false;
 
                     yield return new WaitForSeconds(3);
-                    //RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().enabled = false;
-                    RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().gameObject.SetActive(false);
+
+                    RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().enabled = false;
+                    
                     RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<Rigidbody>().isKinematic = true;
 
 
@@ -114,8 +116,9 @@ public class Standings : MonoBehaviour
                 if (RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<Statistics>().lap > GetComponent<RaceManager>().totalLaps)
                 {
                     RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<CarController>().controllable = false;
-                    //RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().enabled = false;
-                    RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().gameObject.SetActive(false);
+
+                    RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().enabled = false;
+                    
                     yield return new WaitForSeconds(3);
 
                     RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<Rigidbody>().isKinematic = true;
@@ -144,7 +147,7 @@ public class Standings : MonoBehaviour
         for (int i = 0; i < RankManager.instance.totalRacers; i++)
         {
             //Destroy(RankManager.instance.racerRanks[i].racer.gameObject);
-            //Destroy(RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().gameObject);
+            Destroy(RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().gameObject);
             RankManager.instance.racerRanks[i].racer.gameObject.SetActive(false);
         }
     }

@@ -102,8 +102,7 @@ public class SceneManager : MonoBehaviour
         isTrackLoaded = true;
 
         race_manager.Reset();
-        // standings.Reset();
-        RankManager.instance.Reset();
+
         upgrade_menu.gameObject.SetActive(false);
 
     }
@@ -127,7 +126,7 @@ public class SceneManager : MonoBehaviour
             standings.Reset();
             StopAllCoroutines();
            
-           
+
 
         }
     }
