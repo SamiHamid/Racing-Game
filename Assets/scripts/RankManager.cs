@@ -83,4 +83,9 @@ public class RankManager : MonoBehaviour {
             
 		}
 	}
+
+    public void Reset()
+    {
+        totalRacers = 0;
+    }
 }

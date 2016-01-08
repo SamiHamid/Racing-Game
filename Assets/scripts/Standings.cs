@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RewardSequence : MonoBehaviour
+public class Standings : MonoBehaviour
 {
-    public static RewardSequence instance;
+    public static Standings instance;
 
     public GameObject stage1;
     public GameObject stage2;
@@ -21,7 +21,7 @@ public class RewardSequence : MonoBehaviour
     public Transform endMarker3;
 
     public bool isRewardSequenceFinished = false;
-
+    public int playerRank;
     public int numberOfRewarded;
     public static RaceManager race_manager_instance;
 
@@ -67,12 +67,16 @@ public class RewardSequence : MonoBehaviour
                     RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<CarController>().controllable = false;
 
                     yield return new WaitForSeconds(3);
-                    RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().enabled = false;
+                    //RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().enabled = false;
+                    RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().gameObject.SetActive(false);
                     RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<Rigidbody>().isKinematic = true;
 
                     RankManager.instance.racerRanks[i].racer.gameObject.transform.position = Vector3.Lerp(RankManager.instance.racerRanks[i].racer.gameObject.transform.position, endMarker1.position, fracJourney1);
 
                     numberOfRewarded = 1;
+
+                    if (race_manager_instance.playerCar)
+                        playerRank = 1;
                 }
             }
 
@@ -87,13 +91,17 @@ public class RewardSequence : MonoBehaviour
                     RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<CarController>().controllable = false;
 
                     yield return new WaitForSeconds(3);
-                    RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().enabled = false;
+                    //RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().enabled = false;
+                    RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().gameObject.SetActive(false);
                     RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<Rigidbody>().isKinematic = true;
 
 
                     RankManager.instance.racerRanks[i].racer.gameObject.transform.position = Vector3.Lerp(RankManager.instance.racerRanks[i].racer.gameObject.transform.position, endMarker2.position, fracJourney2);
 
                     numberOfRewarded = 2;
+
+                    if (race_manager_instance.playerCar)
+                        playerRank = 2;
                 }
 
             }
@@ -106,8 +114,8 @@ public class RewardSequence : MonoBehaviour
                 if (RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<Statistics>().lap > GetComponent<RaceManager>().totalLaps)
                 {
                     RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<CarController>().controllable = false;
-                    RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().enabled = false;
-
+                    //RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().enabled = false;
+                    RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().gameObject.SetActive(false);
                     yield return new WaitForSeconds(3);
 
                     RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<Rigidbody>().isKinematic = true;
@@ -115,6 +123,9 @@ public class RewardSequence : MonoBehaviour
                     RankManager.instance.racerRanks[i].racer.gameObject.transform.position = Vector3.Lerp(RankManager.instance.racerRanks[i].racer.gameObject.transform.position, endMarker3.position, fracJourney3);
 
                     numberOfRewarded = 3;
+
+                    if (race_manager_instance.playerCar)
+                        playerRank = 3;
                 }
             }
         }
@@ -124,6 +135,17 @@ public class RewardSequence : MonoBehaviour
         if(race_manager_instance.raceCompleted && numberOfRewarded <= RaceManager.instance.totalRacers)
         {
             isRewardSequenceFinished = true;
+        }
+    }
+
+
+    public void Reset()
+    {
+        for (int i = 0; i < RankManager.instance.totalRacers; i++)
+        {
+            //Destroy(RankManager.instance.racerRanks[i].racer.gameObject);
+            //Destroy(RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>().gameObject);
+            RankManager.instance.racerRanks[i].racer.gameObject.SetActive(false);
         }
     }
 }

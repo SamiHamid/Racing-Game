@@ -61,12 +61,13 @@ public class Statistics : MonoBehaviour
     {
         //create an instance
         instance = this;
-        //rank_manager = GetComponent<RankManager>();
+        //rank = Standings.instance.playerRank;
     }
 
     void Start()
     {
         Initialize();
+        
     }
 	
 	
@@ -255,8 +256,28 @@ public class Statistics : MonoBehaviour
 			reviveTimer = 0.0f;
 		}	
 	}
-	
-	void OnTriggerEnter(Collider other){
+
+    public void UpdateBudget()
+    {
+        if (rank == 1)
+        {
+            PlayerData.AddCurrency(150);
+            Debug.Log("Budget: " + PlayerData.currency);
+        }
+
+        if (rank == 2)
+        {
+            PlayerData.AddCurrency(100);
+            Debug.Log("Budget: " + PlayerData.currency);
+        }
+        if (rank == 3)
+        {
+            PlayerData.AddCurrency(50);
+            Debug.Log("Budget: " + PlayerData.currency);
+        }
+    }
+
+    void OnTriggerEnter(Collider other){
 		//Finish line
 		if(other.tag == "LapPoint" && passedAllNodes){
             //NewLap();
@@ -267,12 +288,13 @@ public class Statistics : MonoBehaviour
 
             lap++;
 
-           /* if (lap > RaceManager.instance.totalLaps)
-            {
-                GetComponent<CarController>().controllable = false;
-            }*/
-
-
+            
         }
-	}
+
+        if (lap == RaceManager.instance.totalLaps + 1)
+        {
+           if (gameObject.tag == "Player")
+                UpdateBudget();
+        }
+    }
 }

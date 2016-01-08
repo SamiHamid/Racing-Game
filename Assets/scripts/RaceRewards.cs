@@ -5,7 +5,5 @@ using System.Collections;
 public class RaceRewards{
 
 	public int currency;
-	public string carUnlock;
-	public string trackUnlock;
 	
 }

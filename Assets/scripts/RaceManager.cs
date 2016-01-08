@@ -7,7 +7,7 @@ using System.IO;
 public class RaceManager : MonoBehaviour {
 	
 	public static RaceManager instance;
-  
+    
     public int totalLaps = 1;
 	public int totalRacers = 4; //The total number of racers (player included)
 	public int playerStartRank = 4; //The rank you will start the race as
@@ -176,13 +176,33 @@ public class RaceManager : MonoBehaviour {
 		raceStarted = true;
 	}
 
-    //public void 
-	
-	public void EndRace()
+    public void UpdateBudget()
+    {
+        if(Standings.instance.playerRank == 1)
+        {
+            PlayerData.AddCurrency(150);
+            Debug.Log("Budget: " + PlayerData.currency);
+        }
+        
+        if(Standings.instance.playerRank == 2)
+        {
+            PlayerData.AddCurrency(100);
+            Debug.Log("Budget: " + PlayerData.currency);
+        }
+        if(Standings.instance.playerRank == 3)
+        {
+            PlayerData.AddCurrency(50);
+            Debug.Log("Budget: " + PlayerData.currency);
+        }
+    }
+
+    public void EndRace()
     {
        // if (AllRacersFinished() == true)
         {
             raceCompleted = true;
+
+            //UpdateBudget();
 
             //update UI panels
             //RaceUI.instance.HandlePanelActivation();
@@ -298,4 +318,11 @@ public class RaceManager : MonoBehaviour {
 		racer.position = new Vector3(node.position.x, node.position.y + 2.0f, node.position.z);
 		racer.rotation = node.rotation;
 	}
+
+    public void Reset()
+    {
+        raceStarted = false;
+        InitializeRace();
+        StartCountdown();
+    }
 }

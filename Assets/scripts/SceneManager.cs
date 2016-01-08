@@ -6,32 +6,47 @@ public class SceneManager : MonoBehaviour
     public GameObject[] tracksContainer; //10 tracks
     public WaypointsContainer[] waypointsContainer;
     public SpawnpointContainer[] spawnpointContainer;
-    public RaceManager race_manager;
     public UpgradeMenu upgrade_menu;
-    public RewardSequence reward_sequence;
+    public Standings standings;
 
-   public bool isTrackSelected = false;
+    private int track_index;
+
+    public static SceneManager instance;
+    public RaceManager race_manager;
+
+    //public bool isTrackSelected = false;
+    public bool enableRaceManager = false;
+    public bool isTrackLoaded = false;
+
+
+    void Awake()
+    {
+        instance = this;
+    }
+
     // Use this for initialization
     void Start()
     {
-        
+        track_index = 0;
+       // InitializeRaceManager();
     }
 
     void InitializeRaceManager()
     {
         race_manager.gameObject.SetActive(true);
-        for (int i = 0; i < tracksContainer.Length; i++)
-        {
-            waypointsContainer[i] = tracksContainer[i].GetComponentInChildren<WaypointsContainer>();
-            spawnpointContainer[i] = tracksContainer[i].GetComponentInChildren<SpawnpointContainer>();
-        }
+        InitializeTrack();
     }
-	
-	// Update is called once per frame
-	void Update ()   
-    {
-        
 
+    void InitializeTrack()
+    {
+        tracksContainer[track_index].SetActive(true);
+        race_manager.pathContainer = waypointsContainer[track_index].transform;
+        race_manager.spawnpointContainer = spawnpointContainer[track_index].transform;
+    }
+
+    //Player can choose track (this will be enabled if it is decided to go with it) 
+    /*void ChooseTrack()
+    {
         if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1))
         {
             tracksContainer[1].SetActive(false);
@@ -60,29 +75,71 @@ public class SceneManager : MonoBehaviour
             race_manager.spawnpointContainer = spawnpointContainer[2].transform;
             isTrackSelected = true;
         }
+    }*/
 
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick2Button7) || Input.GetKeyDown(KeyCode.Joystick1Button1))
+    public int GetTrackIndex()
+    {
+        return track_index;
+    }
+        
+	public void LoadNextTrack()
+    {
+        track_index++;
+      
+        for (int i = 0; i < tracksContainer.Length; i++)
         {
-            if (isTrackSelected == true)
+            if (i == track_index)
             {
-                InitializeRaceManager();
+                race_manager.pathContainer = waypointsContainer[i].transform;
+                race_manager.spawnpointContainer = spawnpointContainer[i].transform;
+                tracksContainer[i].SetActive(true);
+                continue;
             }
             else
-                Debug.LogError("Please choose a track"); 
+                tracksContainer[i].SetActive(false);
         }
 
-        if (reward_sequence.isRewardSequenceFinished)
+        isTrackLoaded = true;
+
+        race_manager.Reset();
+        // standings.Reset();
+        RankManager.instance.Reset();
+        upgrade_menu.gameObject.SetActive(false);
+
+    }
+
+	// Update is called once per frame
+	void Update ()   
+    {
+        //Enter start race button on the main menu (will be implemented later)
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick2Button7) || Input.GetKeyDown(KeyCode.Joystick1Button1))
+        {
+                InitializeRaceManager();   
+        }
+
+        if (standings.isRewardSequenceFinished)
         {
             StartCoroutine(ViewUpgradeMenu());
         }
+
+        if(isTrackLoaded)
+        {
+            standings.Reset();
+            StopAllCoroutines();
+           
+           
+
+        }
     }
-
-
 
     IEnumerator ViewUpgradeMenu()
     {
         yield return new WaitForSeconds(3f);
         upgrade_menu.gameObject.SetActive(true);
+        
+        standings.isRewardSequenceFinished = false;
+
+        
     }
 
 }

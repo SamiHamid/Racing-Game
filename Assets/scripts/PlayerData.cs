@@ -4,10 +4,10 @@ using System.Collections;
 
 public class PlayerData : MonoBehaviour {
 
-	private static int startingCurrency = 5000;
-	public static int currency;
-	
-	 public static void ClearData(){
+	private static int startingCurrency = 0;
+	public static int currency = 100;
+
+    public static void ClearData(){
         PlayerPrefs.DeleteAll();
         currency = startingCurrency;
         PlayerData.SaveCurrency();
