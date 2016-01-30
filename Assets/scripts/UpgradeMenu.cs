@@ -13,9 +13,9 @@ public class UpgradeMenu : MonoBehaviour
     }
 
     public Price price;
-    public static UpgradeMenu instance;
+   // public static UpgradeMenu instance;
     public static RaceManager race_manager_instance;
-
+    
 
     public GameObject[] upgrades;
     public GameObject selectionMarker;
@@ -30,7 +30,7 @@ public class UpgradeMenu : MonoBehaviour
     void Awake()
     {
         //create an instance
-        instance = this;
+       // instance = this;
         current_track_index = SceneManager.instance.GetTrackIndex();
         price = new Price();
         race_manager_instance = RaceManager.instance;
@@ -41,7 +41,7 @@ public class UpgradeMenu : MonoBehaviour
     void Start()
     {
         InitializeSelectionMarker();
-        race_manager_instance.gameObject.SetActive(false);
+        
         race_manager_instance.raceCompleted = false;
         Debug.Log("Starting budget: " + PlayerData.currency);
         Debug.Log("Current track index: " + current_track_index);

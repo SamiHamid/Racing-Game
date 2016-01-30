@@ -12,36 +12,39 @@ public class SceneManager : MonoBehaviour
     private int track_index;
 
     public static SceneManager instance;
-    public RaceManager race_manager;
+    public static ProgressTracker progress_tracker_instance;
+    public GameObject race_manager;
 
     //public bool isTrackSelected = false;
-    public bool enableRaceManager = false;
     public bool isTrackLoaded = false;
 
 
     void Awake()
     {
         instance = this;
+        progress_tracker_instance = ProgressTracker.instance;
+        race_manager = GameObject.Find("RaceManager");
     }
 
     // Use this for initialization
     void Start()
     {
         track_index = 0;
-       // InitializeRaceManager();
+        // InitializeRaceManager();
+        InitializeTrack();
     }
 
     void InitializeRaceManager()
     {
-        race_manager.gameObject.SetActive(true);
+        //RaceManager.instance.gameObject.SetActive(true);
         InitializeTrack();
     }
 
-    void InitializeTrack()
+    public void InitializeTrack()
     {
         tracksContainer[track_index].SetActive(true);
-        race_manager.pathContainer = waypointsContainer[track_index].transform;
-        race_manager.spawnpointContainer = spawnpointContainer[track_index].transform;
+        RaceManager.instance.pathContainer = waypointsContainer[track_index].transform;
+        RaceManager.instance.spawnpointContainer = spawnpointContainer[track_index].transform;
     }
 
     //Player can choose track (this will be enabled if it is decided to go with it) 
@@ -81,17 +84,17 @@ public class SceneManager : MonoBehaviour
     {
         return track_index;
     }
-        
-	public void LoadNextTrack()
+
+    public void LoadNextTrack()
     {
         track_index++;
-      
+
         for (int i = 0; i < tracksContainer.Length; i++)
         {
             if (i == track_index)
             {
-                race_manager.pathContainer = waypointsContainer[i].transform;
-                race_manager.spawnpointContainer = spawnpointContainer[i].transform;
+                RaceManager.instance.pathContainer = waypointsContainer[i].transform;
+                RaceManager.instance.spawnpointContainer = spawnpointContainer[i].transform;
                 tracksContainer[i].SetActive(true);
                 continue;
             }
@@ -100,20 +103,31 @@ public class SceneManager : MonoBehaviour
         }
 
         isTrackLoaded = true;
+        standings.Reset();
+        RankManager.instance.Reset();
 
-        race_manager.Reset();
 
-        upgrade_menu.gameObject.SetActive(false);
+        Destroy(RaceManager.instance.GetComponent<RaceManager>());
+        RaceManager.instance.gameObject.AddComponent<RaceManager>();
+        Destroy(RaceManager.instance.GetComponent<RankManager>());
+        RaceManager.instance.gameObject.AddComponent<RankManager>();
+        Destroy(RaceManager.instance.GetComponent<Standings>());
+        RaceManager.instance.gameObject.AddComponent<Standings>();
 
+        for (int i = 0; i < RankManager.instance.totalRacers; i++)
+        {
+            Destroy(RankManager.instance.racerRanks[i].racer.GetComponent<Statistics>());
+            RankManager.instance.racerRanks[i].racer.AddComponent<Statistics>();
+        }
     }
 
-	// Update is called once per frame
-	void Update ()   
+    // Update is called once per frame
+    void Update()
     {
         //Enter start race button on the main menu (will be implemented later)
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick2Button7) || Input.GetKeyDown(KeyCode.Joystick1Button1))
         {
-                InitializeRaceManager();   
+            InitializeRaceManager();
         }
 
         if (standings.isRewardSequenceFinished)
@@ -121,13 +135,12 @@ public class SceneManager : MonoBehaviour
             StartCoroutine(ViewUpgradeMenu());
         }
 
-        if(isTrackLoaded)
+        if (isTrackLoaded)
         {
-            standings.Reset();
+            //standings.Reset();
             StopAllCoroutines();
-           
 
-
+            upgrade_menu.gameObject.SetActive(false);
         }
     }
 
@@ -135,10 +148,10 @@ public class SceneManager : MonoBehaviour
     {
         yield return new WaitForSeconds(3f);
         upgrade_menu.gameObject.SetActive(true);
-        
-        standings.isRewardSequenceFinished = false;
 
-        
+        standings.isRewardSequenceFinished = false;
+        RaceManager.instance.opponentCars.Clear();
+        RaceManager.instance.playerCar = null;
     }
 
 }

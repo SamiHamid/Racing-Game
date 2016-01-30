@@ -80,12 +80,12 @@ public class RankManager : MonoBehaviour {
 				racerRanks[r].racer.GetComponent<Statistics>().rank = r + 1;
                 
 			}
-            
+
 		}
 	}
 
     public void Reset()
     {
-        totalRacers = 0;
+       // racerStats.Clear();
     }
 }

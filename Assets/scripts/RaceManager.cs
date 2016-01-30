@@ -10,11 +10,12 @@ public class RaceManager : MonoBehaviour {
     
     public int totalLaps = 1;
 	public int totalRacers = 4; //The total number of racers (player included)
-	public int playerStartRank = 4; //The rank you will start the race as
+	public int playerStartRank = 2; //The rank you will start the race as
 	public float raceDistance; //Your race track's distance.
     [HideInInspector]public float countdownDelay = 3.0f;
 	public GameObject playerCar;
 	public List <GameObject> opponentCars = new List <GameObject>();
+   
 	public Transform pathContainer;
 	public Transform spawnpointContainer;
 	[HideInInspector]public List<Transform> spawnpoints = new List <Transform>();
@@ -27,15 +28,9 @@ public class RaceManager : MonoBehaviour {
 	//public bool showRacerPointers = true; //Should minimap pointers appear above all racers
 	//public bool showRaceInfoMessages = true;//Show final lap indication , new best lap, speed trap & racer knockout information texts
 	//public bool forceWrongwayRespawn; //should the player get respawned if going the wrong way
-	public bool raceStarted; //has the race began
-	public bool raceCompleted; //have the all cars finished the race
-	public bool racePaused; //is the game paused
-
-    //Countdown
-    public GameObject Number1;
-    public GameObject Number2;
-    public GameObject Number3;
-    public GameObject GoObject;
+	public bool raceStarted = false; //has the race began
+	public bool raceCompleted = false; //have the all cars finished the race
+	public bool racePaused = false; //is the game paused
 
 	//Rewards
 	public List<RaceRewards> raceRewards = new List<RaceRewards>();
@@ -43,17 +38,29 @@ public class RaceManager : MonoBehaviour {
 	void Awake () {
 		//create an instance
 		instance = this;
+        
     }
-	
-	void Start()
+
+    void Start()
     {
+        Debug.Log("Started");
+
+        Object[] AICars = Resources.LoadAll("AI Cars", typeof(GameObject));
+        playerCar = (GameObject) Resources.Load("PlayerCars/Car2_Player");
+
+        foreach(GameObject AICar in AICars)
+        {
+            opponentCars.Add(AICar);
+        }
+
+        SceneManager.instance.InitializeTrack();
         InitializeRace();
 	}
 	
 	void InitializeRace(){
 		
 		ConfigureNodes();
-		SpawnRacers();
+        SpawnRacers();
         StartCountdown();
 	}
 	
@@ -65,7 +72,8 @@ public class RaceManager : MonoBehaviour {
 		}
 		
 		spawnpoints.Clear();
-		
+        
+    
 		//Find the children of the spawnpoint container and add them to the spawnpoints List.
 		Transform[] _sp = spawnpointContainer.GetComponentsInChildren<Transform>();
 		foreach(Transform point in _sp){
@@ -98,7 +106,8 @@ public class RaceManager : MonoBehaviour {
 		for(int i = 0; i < totalRacers; i++){
 			if(spawnpoints[i] != spawnpoints[playerStartRank-1] && opponentCars.Count > 0){
 				Instantiate(opponentCars[Random.Range(0,opponentCars.Count)],spawnpoints[i].position,spawnpoints[i].rotation);
-			}
+
+            }
 			else if(spawnpoints[i] == spawnpoints[playerStartRank-1] && playerCar){
 				
 					Instantiate(playerCar,spawnpoints[i].position,spawnpoints[i].rotation);
@@ -111,47 +120,53 @@ public class RaceManager : MonoBehaviour {
 	}
 
 
-    void StartCountdown()
+    public void No3()
     {
-        Invoke("StartRace", countdownDelay + 1);
-        Invoke("No3", 1f);
-        Invoke("No2", 2f);
-        Invoke("No1", 3f);
-        Invoke("Go", 4f);
-        Invoke("DisableGo", 5f);
+       Countdown.instance.countdownArray[0].SetActive(true);
+       Countdown.instance.countdownArray[1].SetActive(false);
         
     }
 
-    private void No1()
+    public void No2()
     {
-        Number1.SetActive(true);
-        Number2.SetActive(false);
+        Countdown.instance.countdownArray[0].SetActive(false);
+        Countdown.instance.countdownArray[1].SetActive(true);
+ 
     }
 
-    private void No2()
+    public void No1()
     {
-        Number3.SetActive(false);
-        Number2.SetActive(true);
+        Countdown.instance.countdownArray[2].SetActive(true);
+        Countdown.instance.countdownArray[1].SetActive(false);
+        
     }
 
-    private void No3()
+    public void Go()
     {
-        Number2.SetActive(false);
-        Number3.SetActive(true);
-    }
+       Countdown.instance.countdownArray[0].SetActive(false);
+       Countdown.instance.countdownArray[1].SetActive(false);
+       Countdown.instance.countdownArray[2].SetActive(false);
+       Countdown.instance.countdownArray[3].SetActive(true);
 
-    private void Go()
-    {
-        Number3.SetActive(false);
-        Number1.SetActive(false);
-        GoObject.SetActive(true);
     }
 
 
     private void DisableGo()
     {
-        GoObject.SetActive(false);
+        Countdown.instance.countdownArray[3].SetActive(false);
     }
+
+    public void StartCountdown()
+    {
+        Invoke("StartRace", countdownDelay + 2);
+        Invoke("No3", 1f);
+        Invoke("No2", 2f);
+        Invoke("No1", 3f);
+        Invoke("Go", 4f);
+        Invoke("DisableGo", 5f);
+    }
+
+
 
 
 
@@ -318,11 +333,4 @@ public class RaceManager : MonoBehaviour {
 		racer.position = new Vector3(node.position.x, node.position.y + 2.0f, node.position.z);
 		racer.rotation = node.rotation;
 	}
-
-    public void Reset()
-    {
-        raceStarted = false;
-        InitializeRace();
-        StartCountdown();
-    }
 }

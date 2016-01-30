@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Countdown : MonoBehaviour {
+public class Countdown : MonoBehaviour
+{ 
+    public static Countdown instance;
 
-	// Use this for initialization
-	void Start () {
+    public GameObject[] countdownArray;
+
+    void Awake()
+    {
+        instance = this;
+       // StartCountdown();
+    }
 	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    
 }
