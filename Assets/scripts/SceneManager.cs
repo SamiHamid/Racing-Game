@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SceneManager : MonoBehaviour
 {
@@ -8,8 +9,9 @@ public class SceneManager : MonoBehaviour
     public SpawnpointContainer[] spawnpointContainer;
     public UpgradeMenu upgrade_menu;
     public Standings standings;
-
+    public Application[] scenes;
     private int track_index;
+   // public Transform[] scenes;
 
     public static SceneManager instance;
     public static ProgressTracker progress_tracker_instance;
@@ -32,6 +34,7 @@ public class SceneManager : MonoBehaviour
         track_index = 0;
         // InitializeRaceManager();
         InitializeTrack();
+        
     }
 
     void InitializeRaceManager()
@@ -42,9 +45,9 @@ public class SceneManager : MonoBehaviour
 
     public void InitializeTrack()
     {
-        tracksContainer[track_index].SetActive(true);
-        RaceManager.instance.pathContainer = waypointsContainer[track_index].transform;
-        RaceManager.instance.spawnpointContainer = spawnpointContainer[track_index].transform;
+       // tracksContainer[track_index].SetActive(true);
+       // RaceManager.instance.pathContainer = waypointsContainer[track_index].transform;
+       // RaceManager.instance.spawnpointContainer = spawnpointContainer[track_index].transform;
     }
 
     //Player can choose track (this will be enabled if it is decided to go with it) 
@@ -87,38 +90,46 @@ public class SceneManager : MonoBehaviour
 
     public void LoadNextTrack()
     {
-        track_index++;
-
-        for (int i = 0; i < tracksContainer.Length; i++)
+        if (Application.loadedLevelName == "MainScene")
         {
-            if (i == track_index)
-            {
-                RaceManager.instance.pathContainer = waypointsContainer[i].transform;
-                RaceManager.instance.spawnpointContainer = spawnpointContainer[i].transform;
-                tracksContainer[i].SetActive(true);
-                continue;
-            }
-            else
-                tracksContainer[i].SetActive(false);
+            Application.LoadLevel("BridgeTrackScene");
         }
+        if (Application.loadedLevelName == "BridgeTrackScene")
+        {
+            Application.LoadLevel("BlasterTrackScene");
+        }
+        /* track_index++;
+
+         for (int i = 0; i < tracksContainer.Length; i++)
+         {
+             if (i == track_index)
+             {
+                 RaceManager.instance.pathContainer = waypointsContainer[i].transform;
+                 RaceManager.instance.spawnpointContainer = spawnpointContainer[i].transform;
+                 tracksContainer[i].SetActive(true);
+                 continue;
+             }
+             else
+                 tracksContainer[i].SetActive(false);
+         }*/
 
         isTrackLoaded = true;
-        standings.Reset();
-        RankManager.instance.Reset();
+        //standings.Reset();
+        //RankManager.instance.Reset();
 
 
-        Destroy(RaceManager.instance.GetComponent<RaceManager>());
-        RaceManager.instance.gameObject.AddComponent<RaceManager>();
-        Destroy(RaceManager.instance.GetComponent<RankManager>());
-        RaceManager.instance.gameObject.AddComponent<RankManager>();
-        Destroy(RaceManager.instance.GetComponent<Standings>());
-        RaceManager.instance.gameObject.AddComponent<Standings>();
+        //Destroy(RaceManager.instance.GetComponent<RaceManager>());
+        //RaceManager.instance.gameObject.AddComponent<RaceManager>();
+        //Destroy(RaceManager.instance.GetComponent<RankManager>());
+        //RaceManager.instance.gameObject.AddComponent<RankManager>();
+        //Destroy(RaceManager.instance.GetComponent<Standings>());
+        //RaceManager.instance.gameObject.AddComponent<Standings>();
 
-        for (int i = 0; i < RankManager.instance.totalRacers; i++)
+        /*for (int i = 0; i < RankManager.instance.totalRacers; i++)
         {
             Destroy(RankManager.instance.racerRanks[i].racer.GetComponent<Statistics>());
             RankManager.instance.racerRanks[i].racer.AddComponent<Statistics>();
-        }
+        }*/
     }
 
     // Update is called once per frame
@@ -133,6 +144,7 @@ public class SceneManager : MonoBehaviour
         if (standings.isRewardSequenceFinished)
         {
             StartCoroutine(ViewUpgradeMenu());
+            
         }
 
         if (isTrackLoaded)
@@ -150,8 +162,9 @@ public class SceneManager : MonoBehaviour
         upgrade_menu.gameObject.SetActive(true);
 
         standings.isRewardSequenceFinished = false;
-        RaceManager.instance.opponentCars.Clear();
-        RaceManager.instance.playerCar = null;
+        //RaceManager.instance.opponentCars.Clear();
+        //RaceManager.instance.playerCar = null;
+        
     }
 
 }

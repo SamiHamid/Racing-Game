@@ -86,6 +86,6 @@ public class RankManager : MonoBehaviour {
 
     public void Reset()
     {
-       // racerStats.Clear();
+        racerStats.Clear();
     }
 }

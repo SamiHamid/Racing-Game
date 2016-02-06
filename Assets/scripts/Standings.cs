@@ -139,7 +139,7 @@ public class Standings : MonoBehaviour
             }
             else
             {
-                if (RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<Statistics>().lap > GetComponent<RaceManager>().totalLaps)
+                if (race_manager_instance.raceCompleted)
                 {
                     RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<CarController>().controllable = false;
 
@@ -157,7 +157,7 @@ public class Standings : MonoBehaviour
         
 
         //If race is completed and all cars are rewarded, reward sequence is finished. 
-        if(race_manager_instance.raceCompleted && numberOfRewarded <= RaceManager.instance.totalRacers)
+        if(race_manager_instance.raceCompleted && numberOfRewarded < RaceManager.instance.totalRacers)
         {
             isRewardSequenceFinished = true;
         }

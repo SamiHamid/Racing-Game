@@ -15,8 +15,10 @@ public class RaceManager : MonoBehaviour {
     [HideInInspector]public float countdownDelay = 3.0f;
 	public GameObject playerCar;
 	public List <GameObject> opponentCars = new List <GameObject>();
-   
-	public Transform pathContainer;
+    private List<Transform> m_pathList;
+
+    private Transform[] m_path;
+    public Transform pathContainer;
 	public Transform spawnpointContainer;
 	[HideInInspector]public List<Transform> spawnpoints = new List <Transform>();
 	//public string playerName = "You";
@@ -178,7 +180,7 @@ public class RaceManager : MonoBehaviour {
 			PauseRace();
 		}
 
-        if (AllRacersFinished() == true)
+        if (ThirdRacerFinished() == true)
             EndRace();
 	}
 	
@@ -271,12 +273,12 @@ public class RaceManager : MonoBehaviour {
 	}
 
 
-    // Checks if all racers have finished
-    public bool AllRacersFinished()
+    // Checks if the first three racers have finished
+    public bool ThirdRacerFinished()
     {
         int finished = 0;
 
-        bool allFinished = false;
+        bool thirdFinished = false;
         Statistics[] allRacers = GameObject.FindObjectsOfType(typeof(Statistics)) as Statistics[];
         for (int i = 0; i < allRacers.Length; i++)
         { 
@@ -286,23 +288,23 @@ public class RaceManager : MonoBehaviour {
                 finished++;
             }
 
-            if (finished == allRacers.Length)
+            if (finished == allRacers.Length - 1)
             {
-                allFinished = true;
+                thirdFinished = true;
             }
             else
             {
-                allFinished = false;
+                thirdFinished = false;
             }  
         }
 
-        return allFinished;
+        return thirdFinished;
     }
 	
 	//Used to calculate track distance(in Meters) & rotate the nodes correctly
 	void ConfigureNodes(){
-		Transform[] m_path = pathContainer.GetComponentsInChildren<Transform>();
-		List<Transform> m_pathList = new List<Transform>();
+        m_path = pathContainer.GetComponentsInChildren<Transform>();
+		m_pathList = new List<Transform>();
 		foreach(Transform node in m_path){
 			if( node != pathContainer){
 				m_pathList.Add(node);
