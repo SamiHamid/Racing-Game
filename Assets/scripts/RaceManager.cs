@@ -55,7 +55,7 @@ public class RaceManager : MonoBehaviour {
             opponentCars.Add(AICar);
         }
 
-        SceneManager.instance.InitializeTrack();
+        //SceneManager_.instance.InitializeTrack();
         InitializeRace();
 	}
 	

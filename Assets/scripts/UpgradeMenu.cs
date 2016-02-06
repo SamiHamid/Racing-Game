@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class UpgradeMenu : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class UpgradeMenu : MonoBehaviour
     {
         //create an instance
        // instance = this;
-        current_track_index = SceneManager.instance.GetTrackIndex();
+        current_track_index = SceneManager_.instance.GetTrackIndex();
         price = new Price();
         race_manager_instance = RaceManager.instance;
         
@@ -56,6 +57,7 @@ public class UpgradeMenu : MonoBehaviour
         if (isEnabled)
         {
             MenuInput();
+            
         }
     }
     // This function is called when the object becomes enabled and active
@@ -197,7 +199,7 @@ public class UpgradeMenu : MonoBehaviour
                         //Debug.Log("Budget: " + PlayerData.currency);
                         break;
                     case 5:
-                        SceneManager.instance.LoadNextTrack();
+                        SceneManager_.instance.LoadNextTrack();
                         break;
                 }
                 

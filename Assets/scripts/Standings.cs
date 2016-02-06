@@ -162,14 +162,5 @@ public class Standings : MonoBehaviour
             isRewardSequenceFinished = true;
         }
     }
-
-    public void Reset()
-    {
-        for (int i = 0; i < RankManager.instance.totalRacers; i++)
-        {
-            Destroy(RankManager.instance.racerRanks[i].racer);
-            Destroy(RankManager.instance.racerRanks[i].racer.gameObject.GetComponent<ProgressTracker>());
-        }
-    }
 }
 

@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
-public class SceneManager : MonoBehaviour
+public class SceneManager_ : MonoBehaviour
 {
     public GameObject[] tracksContainer; //10 tracks
     public WaypointsContainer[] waypointsContainer;
@@ -13,7 +14,7 @@ public class SceneManager : MonoBehaviour
     private int track_index;
    // public Transform[] scenes;
 
-    public static SceneManager instance;
+    public static SceneManager_ instance;
     public static ProgressTracker progress_tracker_instance;
     public GameObject race_manager;
 
@@ -90,13 +91,14 @@ public class SceneManager : MonoBehaviour
 
     public void LoadNextTrack()
     {
-        if (Application.loadedLevelName == "MainScene")
+        
+        if (SceneManager.GetActiveScene().name == "MainScene")
         {
-            Application.LoadLevel("BridgeTrackScene");
+            SceneManager.LoadScene("BridgeTrackScene");
         }
-        if (Application.loadedLevelName == "BridgeTrackScene")
+        if (SceneManager.GetActiveScene().name == "BridgeTrackScene")
         {
-            Application.LoadLevel("BlasterTrackScene");
+            SceneManager.LoadScene("BlasterTrackScene");
         }
         /* track_index++;
 
@@ -161,7 +163,7 @@ public class SceneManager : MonoBehaviour
         yield return new WaitForSeconds(3f);
         upgrade_menu.gameObject.SetActive(true);
 
-        standings.isRewardSequenceFinished = false;
+       
         //RaceManager.instance.opponentCars.Clear();
         //RaceManager.instance.playerCar = null;
         
