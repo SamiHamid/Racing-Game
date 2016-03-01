@@ -16,7 +16,6 @@ public class UpgradeMenu : MonoBehaviour
     public Price price;
    // public static UpgradeMenu instance;
     public static RaceManager race_manager_instance;
-    
 
     public GameObject[] upgrades;
     public GameObject selectionMarker;
@@ -199,7 +198,7 @@ public class UpgradeMenu : MonoBehaviour
                         //Debug.Log("Budget: " + PlayerData.currency);
                         break;
                     case 5:
-                        SceneManager_.instance.LoadNextTrack();
+                        StartCoroutine(SceneManager_.instance.LoadNextTrack());
                         break;
                 }
                 

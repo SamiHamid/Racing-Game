@@ -11,22 +11,28 @@ public class SceneManager_ : MonoBehaviour
     public UpgradeMenu upgrade_menu;
     public Standings standings;
     public Application[] scenes;
-    private int track_index;
-   // public Transform[] scenes;
-
+    // public Transform[] scenes;
     public static SceneManager_ instance;
     public static ProgressTracker progress_tracker_instance;
     public GameObject race_manager;
-
     //public bool isTrackSelected = false;
     public bool isTrackLoaded = false;
 
+    private int track_index;
+    private ScreenFadeOut fadeOutLeft;
+    private ScreenFadeOut fadeOutRight;
+    private ScreenFadeIn fadeInLeft;
+    private ScreenFadeIn fadeInRight;
 
     void Awake()
     {
         instance = this;
         progress_tracker_instance = ProgressTracker.instance;
         race_manager = GameObject.Find("RaceManager");
+        fadeInLeft = GameObject.Find("Main Camera Left").GetComponent<ScreenFadeIn>();
+        fadeInRight = GameObject.Find("Main Camera Right").GetComponent<ScreenFadeIn>();
+        fadeOutLeft = GameObject.Find("Main Camera Left").GetComponent<ScreenFadeOut>();
+        fadeOutRight = GameObject.Find("Main Camera Right").GetComponent<ScreenFadeOut>();
     }
 
     // Use this for initialization
@@ -35,7 +41,10 @@ public class SceneManager_ : MonoBehaviour
         track_index = 0;
         // InitializeRaceManager();
         InitializeTrack();
-        
+        fadeInLeft.enabled = true;
+        fadeInRight.enabled = true;
+        fadeOutLeft.enabled = false;
+        fadeOutRight.enabled = false;
     }
 
     void InitializeRaceManager()
@@ -46,9 +55,9 @@ public class SceneManager_ : MonoBehaviour
 
     public void InitializeTrack()
     {
-       // tracksContainer[track_index].SetActive(true);
-       // RaceManager.instance.pathContainer = waypointsContainer[track_index].transform;
-       // RaceManager.instance.spawnpointContainer = spawnpointContainer[track_index].transform;
+        // tracksContainer[track_index].SetActive(true);
+        // RaceManager.instance.pathContainer = waypointsContainer[track_index].transform;
+        // RaceManager.instance.spawnpointContainer = spawnpointContainer[track_index].transform;
     }
 
     //Player can choose track (this will be enabled if it is decided to go with it) 
@@ -89,15 +98,21 @@ public class SceneManager_ : MonoBehaviour
         return track_index;
     }
 
-    public void LoadNextTrack()
+    public IEnumerator LoadNextTrack()
     {
-        
+
         if (SceneManager.GetActiveScene().name == "MainScene")
         {
+            fadeOutRight.enabled = true;
+            fadeOutLeft.enabled = true;
+            yield return new WaitForSeconds(5.0f);
             SceneManager.LoadScene("BridgeTrackScene");
         }
         if (SceneManager.GetActiveScene().name == "BridgeTrackScene")
         {
+            fadeOutRight.enabled = true;
+            fadeOutLeft.enabled = true;
+            yield return new WaitForSeconds(5.0f);
             SceneManager.LoadScene("BlasterTrackScene");
         }
         /* track_index++;
@@ -146,7 +161,7 @@ public class SceneManager_ : MonoBehaviour
         if (standings.isRewardSequenceFinished)
         {
             StartCoroutine(ViewUpgradeMenu());
-            
+
         }
 
         if (isTrackLoaded)
@@ -163,10 +178,10 @@ public class SceneManager_ : MonoBehaviour
         yield return new WaitForSeconds(3f);
         upgrade_menu.gameObject.SetActive(true);
 
-       
+
         //RaceManager.instance.opponentCars.Clear();
         //RaceManager.instance.playerCar = null;
-        
+
     }
 
 }
