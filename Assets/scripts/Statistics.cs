@@ -61,7 +61,6 @@ public class Statistics : MonoBehaviour
     {
         //create an instance
         instance = this;
-        //rank = Standings.instance.playerRank;
     }
 
     void Start()
@@ -143,62 +142,11 @@ public class Statistics : MonoBehaviour
 	}
 	
 	//Called on new lap
-	public void NewLap(){
-		
-		/*if(gameObject.tag =="Player"){
-			CheckForBestTime();
-		}*/
-		
-		//Reset our passed nodes & checkpoints
-		/*for(int i = 0; i < passednodes.Count; i++){
-			passednodes[i] = false;
-		}
-	
-			if(lap < RaceManager.instance.totalLaps){
-				lap++; 
-			}*/
-			/*else{
-				if(!finishedRace){
-					FinishRace();
-				}
-			}*/
-		
-        		
+	public void NewLap()
+    {	
 		//Set the previous lap time and reset the lap counter
 		prevLapTime = currentLapTime;
 	}
-	
-	/*void CheckForBestTime(){
-		
-		//Save a new best time if we dont currently have one
-		if(PlayerPrefs.GetFloat("BestTimeFloat"+Application.loadedLevelName) == 0){
-			PlayerPrefs.SetString("BestTime"+Application.loadedLevelName,currentLapTime);
-			PlayerPrefs.SetFloat("BestTimeFloat"+Application.loadedLevelName,lapTimeCounter);
-			PlayerPrefs.Save();
-		}
-		//Save a new best time if we beat our current best time
-		if(PlayerPrefs.GetFloat("BestTimeFloat"+Application.loadedLevelName) > lapTimeCounter){
-			PlayerPrefs.SetString("BestTime"+Application.loadedLevelName,currentLapTime);
-			PlayerPrefs.SetFloat("BestTimeFloat"+Application.loadedLevelName,lapTimeCounter);
-			PlayerPrefs.Save();
-		}
-	}*/
-
-    
-	
-	/*void FinishRace()
-    {
-	    	
-		//Tell the RaceManager that player has finished the race
-		//if(gameObject.tag == "Player"){
-			RaceManager.instance.EndRace(rank);
-		//}
-
-       // GetComponent<CarController>().controllable = false;
-	
-		finishedRace = true;	
-	}*/
-	
 	
 	// Switches a player car to an AI controlled car
 	public void AIMode(){
@@ -244,12 +192,13 @@ public class Statistics : MonoBehaviour
 	void Revive()
     {
 		//incase the car flips over or going wrong way then respawn
-		/*if(transform.localEulerAngles.z > 80 && transform.localEulerAngles.z < 280 || RaceManager.instance.forceWrongwayRespawn && goingWrongway){
+		if(transform.localEulerAngles.z > 80 && transform.localEulerAngles.z < 280  && goingWrongway){
 			reviveTimer += Time.deltaTime;
 		}
-		else{*/
+		else
+        {
 			reviveTimer = 0.0f;
-		//} 
+		} 
 		
 		if(reviveTimer >= 5.0f){
 			RaceManager.instance.RespawnRacer(transform,lastPassedNode);

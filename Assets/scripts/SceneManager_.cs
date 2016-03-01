@@ -5,20 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class SceneManager_ : MonoBehaviour
 {
-    public GameObject[] tracksContainer; //10 tracks
     public WaypointsContainer[] waypointsContainer;
     public SpawnpointContainer[] spawnpointContainer;
     public UpgradeMenu upgrade_menu;
     public Standings standings;
-    public Application[] scenes;
-    // public Transform[] scenes;
     public static SceneManager_ instance;
     public static ProgressTracker progress_tracker_instance;
     public GameObject race_manager;
-    //public bool isTrackSelected = false;
     public bool isTrackLoaded = false;
 
-    private int track_index;
     private ScreenFadeOut fadeOutLeft;
     private ScreenFadeOut fadeOutRight;
     private ScreenFadeIn fadeInLeft;
@@ -38,26 +33,10 @@ public class SceneManager_ : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        track_index = 0;
-        // InitializeRaceManager();
-        InitializeTrack();
         fadeInLeft.enabled = true;
         fadeInRight.enabled = true;
         fadeOutLeft.enabled = false;
         fadeOutRight.enabled = false;
-    }
-
-    void InitializeRaceManager()
-    {
-        //RaceManager.instance.gameObject.SetActive(true);
-        InitializeTrack();
-    }
-
-    public void InitializeTrack()
-    {
-        // tracksContainer[track_index].SetActive(true);
-        // RaceManager.instance.pathContainer = waypointsContainer[track_index].transform;
-        // RaceManager.instance.spawnpointContainer = spawnpointContainer[track_index].transform;
     }
 
     //Player can choose track (this will be enabled if it is decided to go with it) 
@@ -93,11 +72,6 @@ public class SceneManager_ : MonoBehaviour
         }
     }*/
 
-    public int GetTrackIndex()
-    {
-        return track_index;
-    }
-
     public IEnumerator LoadNextTrack()
     {
 
@@ -115,60 +89,27 @@ public class SceneManager_ : MonoBehaviour
             yield return new WaitForSeconds(5.0f);
             SceneManager.LoadScene("BlasterTrackScene");
         }
-        /* track_index++;
-
-         for (int i = 0; i < tracksContainer.Length; i++)
-         {
-             if (i == track_index)
-             {
-                 RaceManager.instance.pathContainer = waypointsContainer[i].transform;
-                 RaceManager.instance.spawnpointContainer = spawnpointContainer[i].transform;
-                 tracksContainer[i].SetActive(true);
-                 continue;
-             }
-             else
-                 tracksContainer[i].SetActive(false);
-         }*/
-
+        
         isTrackLoaded = true;
-        //standings.Reset();
-        //RankManager.instance.Reset();
-
-
-        //Destroy(RaceManager.instance.GetComponent<RaceManager>());
-        //RaceManager.instance.gameObject.AddComponent<RaceManager>();
-        //Destroy(RaceManager.instance.GetComponent<RankManager>());
-        //RaceManager.instance.gameObject.AddComponent<RankManager>();
-        //Destroy(RaceManager.instance.GetComponent<Standings>());
-        //RaceManager.instance.gameObject.AddComponent<Standings>();
-
-        /*for (int i = 0; i < RankManager.instance.totalRacers; i++)
-        {
-            Destroy(RankManager.instance.racerRanks[i].racer.GetComponent<Statistics>());
-            RankManager.instance.racerRanks[i].racer.AddComponent<Statistics>();
-        }*/
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Enter start race button on the main menu (will be implemented later)
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick2Button7) || Input.GetKeyDown(KeyCode.Joystick1Button1))
-        {
-            InitializeRaceManager();
-        }
+        #region Enter start race button on the main menu (will be implemented later)
+        /* if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Joystick2Button7) || Input.GetKeyDown(KeyCode.Joystick1Button1)){
+           }
+        */
+        #endregion
 
         if (standings.isRewardSequenceFinished)
         {
             StartCoroutine(ViewUpgradeMenu());
-
         }
 
         if (isTrackLoaded)
         {
-            //standings.Reset();
             StopAllCoroutines();
-
             upgrade_menu.gameObject.SetActive(false);
         }
     }
@@ -177,12 +118,6 @@ public class SceneManager_ : MonoBehaviour
     {
         yield return new WaitForSeconds(3f);
         upgrade_menu.gameObject.SetActive(true);
-
-
-        //RaceManager.instance.opponentCars.Clear();
-        //RaceManager.instance.playerCar = null;
-
     }
-
 }
 

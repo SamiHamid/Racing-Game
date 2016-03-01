@@ -17,7 +17,7 @@ public class RankManager : MonoBehaviour {
 	}
 	
 	public static RankManager instance;
-	[HideInInspector]public List<Ranker> racerRanks = new List<Ranker>(new Ranker[100]);//allow upto 100 racers
+	[HideInInspector]public List<Ranker> racerRanks = new List<Ranker>(new Ranker[4]);//allow upto 4 racers
 	[HideInInspector]public List<ProgressTracker> racerStats = new List<ProgressTracker>();
 	[HideInInspector]public int totalRacers; //number of racers when the race begins
 	[HideInInspector]public int currentRacers; //number of racers that are currently not knocked out
@@ -38,7 +38,6 @@ public class RankManager : MonoBehaviour {
 		Statistics[] m_racers = GameObject.FindObjectsOfType(typeof(Statistics)) as Statistics[];
 		
 		totalRacers = m_racers.Length;
-        Debug.Log("Total racers: " + totalRacers);
 		
 		for(int i = 0; i < m_racers.Length; i++){
 			if(m_racers[i].knockedOut == false){

@@ -14,27 +14,16 @@ public class UpgradeMenu : MonoBehaviour
     }
 
     public Price price;
-   // public static UpgradeMenu instance;
     public static RaceManager race_manager_instance;
-
     public GameObject[] upgrades;
     public GameObject selectionMarker;
-
     public int menu_index = 0;
-    public int current_track_index;
-   
-   
     public bool isEnabled = false;
-
 
     void Awake()
     {
-        //create an instance
-       // instance = this;
-        current_track_index = SceneManager_.instance.GetTrackIndex();
         price = new Price();
-        race_manager_instance = RaceManager.instance;
-        
+        race_manager_instance = RaceManager.instance;   
     }
 
     // Use this for initialization
@@ -44,10 +33,6 @@ public class UpgradeMenu : MonoBehaviour
         
         race_manager_instance.raceCompleted = false;
         Debug.Log("Starting budget: " + PlayerData.currency);
-        Debug.Log("Current track index: " + current_track_index);
-
-
-
     }
 
     // Update is called once per frame
@@ -59,6 +44,7 @@ public class UpgradeMenu : MonoBehaviour
             
         }
     }
+
     // This function is called when the object becomes enabled and active
     public void OnEnable()
     {
@@ -165,38 +151,35 @@ public class UpgradeMenu : MonoBehaviour
                             Debug.Log("You have insufficient budget to buy any upgrade");
 
                         break;
+
                     case 1:
                         if (PlayerData.currency >= price.engine)
                             PlayerData.DeductCurrency(price.engine);
                         else
                             Debug.Log("You have insufficient budget to buy any upgrade");
-
-                        //Debug.Log("Budget: " + PlayerData.currency);
                         break;
+
                     case 2:
                         if (PlayerData.currency >= price.tires)
                             PlayerData.DeductCurrency(price.tires);
                         else
                             Debug.Log("You have insufficient budget to buy any upgrade");
-
-                        //Debug.Log("Budget: " + PlayerData.currency);
                         break;
+
                     case 3:
                         if (PlayerData.currency >= price.speedometer)
                             PlayerData.DeductCurrency(price.speedometer);
                         else
                             Debug.Log("You have insufficient budget to buy any upgrade");
-
-                        //Debug.Log("Budget: " + PlayerData.currency);
                         break;
+
                     case 4:
                         if (PlayerData.currency >= price.shocks)
                             PlayerData.DeductCurrency(price.shocks);
                         else
                             Debug.Log("You have insufficient budget to buy this upgrade");
-
-                        //Debug.Log("Budget: " + PlayerData.currency);
                         break;
+
                     case 5:
                         StartCoroutine(SceneManager_.instance.LoadNextTrack());
                         break;

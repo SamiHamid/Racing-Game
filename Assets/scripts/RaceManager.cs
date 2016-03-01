@@ -1,13 +1,11 @@
 ﻿/*Race_Manager.cs handles the race logic - countdown, spawning cars, asigning racer names, checking race status, formatting time strings etc */
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO; 
 
 public class RaceManager : MonoBehaviour {
 	
 	public static RaceManager instance;
-    
+    public GameObject[] countdownArray;
     public int totalLaps = 1;
 	public int totalRacers = 4; //The total number of racers (player included)
 	public int playerStartRank = 2; //The rank you will start the race as
@@ -21,15 +19,7 @@ public class RaceManager : MonoBehaviour {
     public Transform pathContainer;
 	public Transform spawnpointContainer;
 	[HideInInspector]public List<Transform> spawnpoints = new List <Transform>();
-	//public string playerName = "You";
-	//public List<string> opponentNamesList = new List<string>();
-	//public TextAsset opponentNames;
-	//public StringReader nameReader;
-	//public GameObject playerPointer, opponentPointer, racerName;
-	//public bool showRacerNames = true; //Should names appear above player cars
-	//public bool showRacerPointers = true; //Should minimap pointers appear above all racers
-	//public bool showRaceInfoMessages = true;//Show final lap indication , new best lap, speed trap & racer knockout information texts
-	//public bool forceWrongwayRespawn; //should the player get respawned if going the wrong way
+	
 	public bool raceStarted = false; //has the race began
 	public bool raceCompleted = false; //have the all cars finished the race
 	public bool racePaused = false; //is the game paused
@@ -54,8 +44,6 @@ public class RaceManager : MonoBehaviour {
         {
             opponentCars.Add(AICar);
         }
-
-        //SceneManager_.instance.InitializeTrack();
         InitializeRace();
 	}
 	
@@ -124,38 +112,38 @@ public class RaceManager : MonoBehaviour {
 
     public void No3()
     {
-       Countdown.instance.countdownArray[0].SetActive(true);
-       Countdown.instance.countdownArray[1].SetActive(false);
+        countdownArray[0].SetActive(true);
+        countdownArray[1].SetActive(false);
         
     }
 
     public void No2()
     {
-        Countdown.instance.countdownArray[0].SetActive(false);
-        Countdown.instance.countdownArray[1].SetActive(true);
+        countdownArray[0].SetActive(false);
+        countdownArray[1].SetActive(true);
  
     }
 
     public void No1()
     {
-        Countdown.instance.countdownArray[2].SetActive(true);
-        Countdown.instance.countdownArray[1].SetActive(false);
+        countdownArray[2].SetActive(true);
+        countdownArray[1].SetActive(false);
         
     }
 
     public void Go()
     {
-       Countdown.instance.countdownArray[0].SetActive(false);
-       Countdown.instance.countdownArray[1].SetActive(false);
-       Countdown.instance.countdownArray[2].SetActive(false);
-       Countdown.instance.countdownArray[3].SetActive(true);
+       countdownArray[0].SetActive(false);
+       countdownArray[1].SetActive(false);
+       countdownArray[2].SetActive(false);
+       countdownArray[3].SetActive(true);
 
     }
 
 
     private void DisableGo()
     {
-        Countdown.instance.countdownArray[3].SetActive(false);
+       countdownArray[3].SetActive(false);
     }
 
     public void StartCountdown()
@@ -167,11 +155,7 @@ public class RaceManager : MonoBehaviour {
         Invoke("Go", 4f);
         Invoke("DisableGo", 5f);
     }
-
-
-
-
-
+    
     void Update()
     {
 		//Pause the race with "Escape".
@@ -215,7 +199,6 @@ public class RaceManager : MonoBehaviour {
 
     public void EndRace()
     {
-       // if (AllRacersFinished() == true)
         {
             raceCompleted = true;
 
@@ -244,14 +227,12 @@ public class RaceManager : MonoBehaviour {
             }*/
         }
 	}
-	
-	
-	public void PauseRace(){
+
+
+    public void PauseRace()
+    {
 		racePaused = !racePaused;
-		
-		//update UI panels
-		//RaceUI.instance.HandlePanelActivation();
-		
+	
 		//Freeze the game & minimize volume on pause
 		if(racePaused){
 			Time.timeScale = 0.0f;
@@ -264,7 +245,8 @@ public class RaceManager : MonoBehaviour {
 	}
 	
 	//Format a float to a time string
-	public string FormatTime(float time){
+	public string FormatTime(float time)
+    {
 		int minutes  = (int)Mathf.Floor(time / 60);
 		int seconds = (int)time % 60;
 		int milliseconds = (int)(time * 100) % 100;
@@ -302,7 +284,8 @@ public class RaceManager : MonoBehaviour {
     }
 	
 	//Used to calculate track distance(in Meters) & rotate the nodes correctly
-	void ConfigureNodes(){
+	void ConfigureNodes()
+    {
         m_path = pathContainer.GetComponentsInChildren<Transform>();
 		m_pathList = new List<Transform>();
 		foreach(Transform node in m_path){
@@ -322,12 +305,14 @@ public class RaceManager : MonoBehaviour {
 	}
 	
 	//used to respawn a racer
-	public void RespawnRacer(Transform racer, Transform node){
+	public void RespawnRacer(Transform racer, Transform node)
+    {
         if(raceCompleted == false)
 		Respawn(racer,node);
 	}
 	
-	public void Respawn(Transform racer, Transform node){
+	public void Respawn(Transform racer, Transform node)
+    {
 		//Flip the car over and place it at the last passed node
 		racer.rotation = Quaternion.LookRotation(racer.forward);
 		racer.GetComponent<Rigidbody>().velocity = Vector3.zero;

@@ -72,8 +72,6 @@ public class ScreenFadeOut : MonoBehaviour
             color.a = 0.0f + Mathf.Clamp01(elapsedTime / fadeTime);
             fadeMaterial.color = color;
         }
-
-        //yield return new WaitForSeconds(3.0f);
     }
 
     /// <summary>
